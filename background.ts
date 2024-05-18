@@ -26,24 +26,32 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       }
     }
   );
-  if (message.action === 'onClicker') {
-  }
 });
 
 const textFinder = () => {
-  const parentDiv = document.querySelector('.ii.gt') as HTMLElement | null;
-  if (parentDiv) {
-    const innerDiv = parentDiv.querySelector('.a3s.aiL') as HTMLElement | null;
-    if (innerDiv) {
-      const emailText = innerDiv.innerText.trim();
-      return `Please add give a professional reply to this email and don't add prompt like here is you email and all stuff just give me the proper response in a good way \n ${emailText}`;
-    } else {
-      console.log('Inner div not found.');
-    }
+  const messageBodies = document.querySelectorAll('.message-body');
+  let combinedText = '';
+  const additionalTexts = document.querySelectorAll('.text.tbody-6.p-t-4');
+  if (additionalTexts.length > 0) {
+    // Extract the text content of each 'text tbody-6 p-t-4' element and trim whitespace
+    const additionalTextContent = Array.from(additionalTexts).map(element => element?.textContent?.trim()).join('\n');
+    combinedText += `\n${additionalTextContent}`;
+    console.log(combinedText,'ADDITIONAL TEXT:::::');
   } else {
-    console.log('Parent div not found.');
+    console.log('No elements with class "text tbody-6 p-t-4" found.');
+  }
+  
+  if (messageBodies.length > 0) {
+    const texts = Array.from(messageBodies).map(element => element?.textContent?.trim());
+    const combinedText = texts.join('\n');
+    console.log(combinedText,'COMBINED TEXT :::::');
+    return `Please add give a professional reply to this email and don't add prompt like here is you email and all stuff just give me the proper response in a good way \n ${combinedText}`;
+  } else {
+    console.log('No elements with class "message-body" found.');
+    return null;
   }
 };
+
 
 const clickHandler = async (emailText: any) => {
   try {

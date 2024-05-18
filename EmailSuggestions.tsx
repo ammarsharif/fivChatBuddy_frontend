@@ -1,68 +1,101 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 
-
 const EmailSuggestions: React.FC = () => {
-  
   const containerStyle = {
     backgroundColor: '#f7f7f7',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
     padding: '20px',
-    width: '265px',
-    height: '100%',
+    width: '350px',
     margin: '-12px',
-    paddingBottom: '100px',
+    paddingBottom: '22em',
     fontFamily: 'Arial, sans-serif',
   };
 
   const headingStyle = {
     color: '#333',
-    fontSize: '24px',
+    fontSize: '17px',
+    fontWeight: 'bold',
+    margin:'10px 5px 10px -2px',
+  };
+
+  const header = {
+    display: 'flex',
+    justifyContent: 'space-between',
     marginBottom: '10px',
   };
 
-  const paragraphStyle = {
-    color: '#666',
+  const logoHeader = {
+    display: 'flex',
+    alignItems: 'center',
+  };
+
+  const toneHeader = {
+    display:'flex'
+  };
+
+  const toneHeaderText = {
+    width: '100%',
+    padding: '7px 0px 0px 3px',
+    marginTop: '10px',
+    fontSize: '15px',
+  };
+
+  const dividerStyle = {
+    width: '100%',
+    border: 'none',
+    borderBottom: '1px solid #ccc',
+    margin: '18px 0px 10px 0px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  };
+
+  const selectContainerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    border: 'none',
+    borderRadius: '5px',
+    marginRight: '5px',
   };
 
   const selectStyle = {
     width: '100%',
-    padding: '10px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    marginTop: '10px',
+    padding: '10px 0px 10px 6px',
+    borderRadius: '10px',
+    border: 'none',
+    margin: '0px',
+    backgroundColor: '#deedff',
+    fontSize: '15px',
   };
+
   const responseItemStyle = {
     cursor: 'pointer',
     padding: '8px',
     marginBottom: '2px',
     backgroundColor: '#eaeaea',
     borderRadius: '4px',
+    lineHeight: '1.5',
+    fontFamily: 'Arial, sans-serif',
+    fontSize: '14px',
+    transition: 'background-color 0.3s ease',
   };
 
   const closeButton = {
-    backgroundColor: '#ccc',
-    color: '#333',
-    padding: '8px 16px',
+    marginTop: '0px',
+    height: '25px',
+    fontSize: '20px',
+    color: '#a5a5a5',
+    backgroundColor: 'transparent',
     border: 'none',
-    borderRadius: '4px',
-    marginBottom: '20px',
     cursor: 'pointer',
   };
-  
 
   const [responseText, setResponseText] = useState<string | null>(null);
-  const [selectedTone, setSelectedTone] = useState<string>('professional');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedTone, setSelectedTone] = useState<string>('formal');
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const messageListener = (message: any) => {
       if (message.action === 'receiveEmailText') {
-        const emailText = message?.response;
-        const modifiedEmailText = emailText?.replace(
-          'professional',
-          selectedTone
-        );
+        const emailText = `Please add give a formal reply to this email and don't add prompt like here is you email and all stuff just give me the proper response in a good way \n ${message?.response}`;
+        const modifiedEmailText = emailText?.replace('formal', selectedTone);
         if (modifiedEmailText && modifiedEmailText.includes(selectedTone)) {
           generateResponse(modifiedEmailText);
         }
@@ -92,7 +125,7 @@ const EmailSuggestions: React.FC = () => {
         headers: {
           'content-type': 'application/json',
           'X-RapidAPI-Key':
-            '01d3db204bmshd41c53a6ae8a9d6p15c871jsned9d98a1c36e',
+            '198bada44amshd95219dc04db750p14af07jsne52453168165-123',
           'X-RapidAPI-Host': 'chatgpt-42.p.rapidapi.com',
         },
         body: JSON.stringify({
@@ -142,56 +175,87 @@ const EmailSuggestions: React.FC = () => {
   };
 
   return (
-    <div style={containerStyle}>
-      <button
-        className="close_button"
-        style={closeButton}
-        onClick={() => handleCloseButton()}
-      >
-        Close
-      </button>
-      <h1 style={headingStyle}>Select Email Tone</h1>
-      <p style={paragraphStyle}>Please select the tone of your email reply:</p>
-      <select id="toneSelect" style={selectStyle} onChange={handleToneChange}>
-        <option value="not_interested">Not Interested</option>
-        <option value="professional">Professional</option>
-        <option value="impower">Impower</option>
-        <option value="attractive">Attractive</option>
-      </select>
+    <div
+      style={{
+        ...containerStyle,
+      }}
+    >
       <div>
-        <p style={{ ...paragraphStyle, marginTop: '20px' }}>
-          Select a response:
-        </p>
-        {loading ? (
-          <div className="spinner"></div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <p
-              style={{ ...responseItemStyle, backgroundColor: '#f0f0f0' }}
-              onClick={() =>
-                handleResponseClick(responseText || 'No response available')
-              }
-            >
-              {responseText || 'No response available'}
-            </p>
+        <div style={header}>
+          <div style={logoHeader}>
+            <img
+              src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
+              height={'28px'}
+              width={'50px'}
+              style={{ borderRadius: '50%' }}
+            ></img>
+            <p style={headingStyle}>Suggestion...</p>
           </div>
-        )}
+          <div style={toneHeader}>
+          <div style={selectContainerStyle}>
+         
+          <select
+            id="toneSelect"
+            style={{...selectStyle}}
+            onChange={handleToneChange}
+          >
+            <option value="formal">👔 Formal</option>
+            <option value="professional">💼 Professional</option>
+            <option value="enthusiastic">🌟 Enthusiastic</option>
+            <option value="not_interested">🚫 Not Interested</option>
+            <option value="impower">💪 Empower</option>
+            <option value="attractive">😍 Attractive</option>
+          </select>
+        </div>
+            <button
+              className="close_button"
+              style={closeButton}
+              onClick={() => handleCloseButton()}
+            >
+              &#x2715;
+            </button>
+          </div>
+        </div>
+        <hr style={dividerStyle} />
+        <div>
+          {loading ? (
+            <div className="spinner"></div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <p
+                style={{
+                  ...responseItemStyle,
+                  transition: 'background-color 0.3s ease',
+                }}
+                onClick={() =>
+                  handleResponseClick(responseText || 'No response available')
+                }
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f0f0f0';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#e6e6e6';
+                }}
+              >
+                {responseText || 'No response available'}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-
-
 const spinnerStyle = `
 .spinner {
-  border: 3px solid rgba(255, 0, 0, 0.3); /* Red border */
+  border: 3px solid ##bfe29d;
   border-radius: 50%;
-  border-top: 3px solid #87150b;
-  width: 15px;
-  height: 15px;
+  border-top: 3px solid #1dbf73;
+  width: 25px;
+  height: 25px;
   animation: spin 1s linear infinite;
-  margin: 4em auto;
+  margin: 11em auto;
 }
 
 @keyframes spin {

@@ -1,65 +1,59 @@
 let iframeExists = false;
   
   chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-    const mainDiv = document.querySelector('.amn');
+    const mainDiv = document.querySelector('.message-action-bar .flex.flex-row.flex-items-center');
     if (mainDiv) {
+      
       if (!document.getElementById('myInjectButton')) {
-        const button = document.createElement('button');
-        button.textContent = 'Button Added';
-        button.id = 'myInjectButton';
-        button.style.padding = '9.5px 16px';
-        button.style.backgroundColor = '#87150b';
-        button.style.color = 'white';
-        button.style.border = '1px solid #87150b';
-        button.style.borderRadius = '18px';
-        button.style.fontWeight = '500';
-        button.style.marginRight = '8px';
-        button.style.cursor = 'pointer';
-        button.style.fontFamily = 'Arial, sans-serif';
-        button.style.fontSize = '.875rem';
-  
-        button.addEventListener('click', function () {
-          // chrome.runtime.sendMessage({ action: 'authenticateWithGoogle' });
-          chrome.runtime.sendMessage({ action: 'executeOnClicker' });
-        });
-  
-        const firstSpan = mainDiv.querySelector('span');
-        if (firstSpan) {
-          mainDiv.insertBefore(button, firstSpan);
-        } else {
-          mainDiv.appendChild(button);
-        }
-      }
-    } else if (!mainDiv) {
-      const mainSmallDiv = document.querySelector('.J-J5-Ji.btA');
-      if (!document.getElementById('myInjectSmallButton')) {
         const button = document.createElement('img');
-        button.src = 'https://media.licdn.com/dms/image/D4D0BAQGd8H31h5niqg/company-logo_200_200/0/1712309492132/evolvebay_logo?e=2147483647&v=beta&t=tSYT6EkXf7aP709xw1DbPc41AbobGq6qtM5PC1El__I';
+        button.src = 'https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png';
         button.alt = 'icon';
-        button.id = 'myInjectSmallButton';
-        button.style.width = '28px';
-        button.style.height = '28px';
-        button.style.borderRadius = '20px';
-        button.style.marginLeft = '10px';
-        button.style.marginRight = '2px';
+        button.id = 'myInjectButton';
+        button.style.width = '40px';
+        button.style.height = '22px';
+        button.style.borderRadius = '50%';
+        button.style.marginRight = '-30px';
         button.style.cursor = 'pointer';
-  
         button.addEventListener('click', function () {
           iframeExists = false;
-          // chrome.runtime.sendMessage({ action: 'authenticateWithGoogle' });
+          chrome.runtime.sendMessage({ action: 'authenticateWithGoogle' });
+          chrome.runtime.sendMessage({ action: 'executeOnClicker' });
         });
-  
-        const firstSpan = mainSmallDiv?.querySelector('span');
-        if (firstSpan) {
-          mainSmallDiv?.insertBefore(button, firstSpan);
-        } else {
-          mainSmallDiv?.appendChild(button);
-        }
+        mainDiv.appendChild(button);
       }
-    }
+    } 
+    // else if (!mainDiv) {
+    //   const mainSmallDiv = document.querySelector('.J-J5-Ji.btA');
+    //   if (!document.getElementById('myInjectSmallButton')) {
+    //     const button = document.createElement('img');
+    //     button.src = 'https://media.licdn.com/dms/image/D4D0BAQGd8H31h5niqg/company-logo_200_200/0/1712309492132/evolvebay_logo?e=2147483647&v=beta&t=tSYT6EkXf7aP709xw1DbPc41AbobGq6qtM5PC1El__I';
+    //     button.alt = 'icon';
+    //     button.id = 'myInjectSmallButton';
+    //     button.style.width = '28px';
+    //     button.style.height = '28px';
+    //     button.style.borderRadius = '20px';
+    //     button.style.marginLeft = '10px';
+    //     button.style.marginRight = '2px';
+    //     button.style.cursor = 'pointer';
+  
+    //     button.addEventListener('click', function () {
+    //       iframeExists = false;
+    //       // chrome.runtime.sendMessage({ action: 'authenticateWithGoogle' });
+    //     });
+  
+    //     const firstSpan = mainSmallDiv?.querySelector('span');
+    //     if (firstSpan) {
+    //       mainSmallDiv?.insertBefore(button, firstSpan);
+    //     } else {
+    //       mainSmallDiv?.appendChild(button);
+    //     }
+    //   }
+    // }
   });
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  console.log(message,'MEssage from reply::::::');
+  
   if (message.action === 'clickReplyButton') {
     const replyButton = document.querySelector(
       '.ams.bkH'
@@ -70,12 +64,14 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       if (!iframeExists) {
         const iframe = document.createElement('iframe');
         iframe.style.cssText = `
-            position: fixed;
-            top: 5em; 
+             position: fixed;
+            top: 24em; 
             right: 3em; 
-            width: 300px; 
-            height: 350px;
-            border: 1px solid blue;
+            width: 383px; 
+            height: 400px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
             border-radius: 17px;
             z-index: 999999;
             background-color: white;

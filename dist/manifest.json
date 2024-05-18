@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "Email Reader",
+  "name": "Fiverr Reader",
   "description": "Demo Chrome Extension that uses React and Webpack",
   "version": "1.0.0",
   "permissions": ["activeTab", "scripting", "tabs", "identity","storage"],
   "action": {
     "default_popup": "index.html",
-    "default_title": "Email Reader"
+    "default_title": "Fiverr Reader"
   },
   "background": {
     "service_worker": "background.js"
