@@ -28,30 +28,44 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   );
 });
 
-const textFinder = () => {
-  const messageBodies = document.querySelectorAll('.message-body');
-  let combinedText = '';
-  const additionalTexts = document.querySelectorAll('.text.tbody-6.p-t-4');
-  if (additionalTexts.length > 0) {
-    // Extract the text content of each 'text tbody-6 p-t-4' element and trim whitespace
-    const additionalTextContent = Array.from(additionalTexts).map(element => element?.textContent?.trim()).join('\n');
-    combinedText += `\n${additionalTextContent}`;
-    console.log(combinedText,'ADDITIONAL TEXT:::::');
-  } else {
-    console.log('No elements with class "text tbody-6 p-t-4" found.');
-  }
-  
-  if (messageBodies.length > 0) {
-    const texts = Array.from(messageBodies).map(element => element?.textContent?.trim());
-    const combinedText = texts.join('\n');
-    console.log(combinedText,'COMBINED TEXT :::::');
-    return `Please add give a professional reply to this email and don't add prompt like here is you email and all stuff just give me the proper response in a good way \n ${combinedText}`;
-  } else {
-    console.log('No elements with class "message-body" found.');
-    return null;
-  }
-};
+const textFinder = (): string | null => {
+  const messageContents = document.querySelectorAll('.message-content');
+  const resultArray: string[] = [];
+  let messageCount = 0;
 
+  const additionalTexts = document.querySelectorAll('.text.tbody-6.p-t-4');
+  const additionalTextsLength = additionalTexts.length;
+  const additionalTextsStartIndex = additionalTextsLength >= 7 ? additionalTextsLength - 7 : 0;
+
+  for (let i = additionalTextsStartIndex; i < additionalTextsLength; i++) {
+    const textContent = additionalTexts[i].textContent?.trim() ?? '';
+    resultArray.push(`${textContent} (buyer)`);
+    messageCount++;
+  }
+
+  const messageContentsLength = messageContents.length;
+  const messageContentsStartIndex = messageContentsLength >= 7 ? messageContentsLength - 7 : 0;
+
+  for (let i = messageContentsStartIndex; i < messageContentsLength; i++) {
+    const content = messageContents[i];
+    const senderElement = content.querySelector('[data-testid="basic-message-header"]');
+    const role = senderElement ? 'buyer' : 'seller';
+
+    const messageBody = content.querySelector('.message-body');
+    if (messageBody) {
+      const messageText = messageBody.textContent?.trim() ?? '';
+      resultArray.push(`${messageText} (${role})`);
+      messageCount++;
+    }
+  }
+
+  const lastFourMessages = resultArray.slice(-4); // Selecting only the last four messages
+  
+  const combinedText = lastFourMessages.join('\n');
+  console.log(combinedText, 'COMBINED TEXT :::::');
+
+  return `Act as a content creation consultant to assist the seller in crafting reply messages. Here is the messages...\n ${combinedText}\n So as you see each message should conclude by specifying whether it is from the seller or the buyer and your  task is to help the seller respond to the buyer's messages efficiently and attractively, maintaining an formal tone for the situation\n make sure the answer should be short in length not too much big as this is chat not an email so i want reply in short and perfect according to given situation\nRemember that don't add the extra lines like here is your text or any warm regard or any thing that usedd to be in bracker like [seller] or any other this just give to the point text so I can just copy and paste it right`;
+};
 
 const clickHandler = async (emailText: any) => {
   try {

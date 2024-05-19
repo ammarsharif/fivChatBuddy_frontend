@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 
-const EmailSuggestions: React.FC = () => {
+const ReplySuggestions: React.FC = () => {
   const containerStyle = {
     backgroundColor: '#f7f7f7',
     padding: '20px',
@@ -14,7 +14,7 @@ const EmailSuggestions: React.FC = () => {
     color: '#333',
     fontSize: '17px',
     fontWeight: 'bold',
-    margin:'10px 5px 10px -2px',
+    margin: '10px 5px 10px -2px',
   };
 
   const header = {
@@ -29,14 +29,7 @@ const EmailSuggestions: React.FC = () => {
   };
 
   const toneHeader = {
-    display:'flex'
-  };
-
-  const toneHeaderText = {
-    width: '100%',
-    padding: '7px 0px 0px 3px',
-    marginTop: '10px',
-    fontSize: '15px',
+    display: 'flex',
   };
 
   const dividerStyle = {
@@ -60,9 +53,10 @@ const EmailSuggestions: React.FC = () => {
     padding: '10px 0px 10px 6px',
     borderRadius: '10px',
     border: 'none',
-    margin: '0px',
-    backgroundColor: '#deedff',
+    marginRight: '6px',
+    backgroundColor: '#def8ff',
     fontSize: '15px',
+    outline: 'none',
   };
 
   const responseItemStyle = {
@@ -89,7 +83,7 @@ const EmailSuggestions: React.FC = () => {
 
   const [responseText, setResponseText] = useState<string | null>(null);
   const [selectedTone, setSelectedTone] = useState<string>('formal');
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const messageListener = (message: any) => {
@@ -157,6 +151,8 @@ const EmailSuggestions: React.FC = () => {
 
   useEffect(() => {
     const replyDiv = document.querySelector('.response');
+    console.log(replyDiv,'REply, ', responseText);
+    
     if (replyDiv && responseText) {
       replyDiv.innerHTML = responseText;
     }
@@ -192,21 +188,24 @@ const EmailSuggestions: React.FC = () => {
             <p style={headingStyle}>Suggestion...</p>
           </div>
           <div style={toneHeader}>
-          <div style={selectContainerStyle}>
-         
-          <select
-            id="toneSelect"
-            style={{...selectStyle}}
-            onChange={handleToneChange}
-          >
-            <option value="formal">👔 Formal</option>
-            <option value="professional">💼 Professional</option>
-            <option value="enthusiastic">🌟 Enthusiastic</option>
-            <option value="not_interested">🚫 Not Interested</option>
-            <option value="impower">💪 Empower</option>
-            <option value="attractive">😍 Attractive</option>
-          </select>
-        </div>
+            <div style={selectContainerStyle}>
+              <select
+                id="toneSelect"
+                style={{ ...selectStyle }}
+                onChange={handleToneChange}
+              >
+                <option value="formal">👔 Formal</option>
+                <option value="persuasive">🗣️ Persuasive</option>
+                <option value="friendly">😊 Friendly</option>
+                <option value="enthusiastic">🌟 Enthusiastic</option>
+                <option value="empathetic">🤗 Empathetic</option>
+                <option value="assertive">💪 Assertive</option>
+                <option value="apologetic">🙏 Apologetic</option>
+                <option value="informative">📘 Informative</option>
+                <option value="reassuring">🤝 Reassuring</option>
+                <option value="grateful">🙏 Grateful</option>
+              </select>
+            </div>
             <button
               className="close_button"
               style={closeButton}
@@ -272,4 +271,4 @@ const styleElement = document.createElement('style');
 styleElement.innerHTML = spinnerStyle;
 document.head.appendChild(styleElement);
 
-export default EmailSuggestions;
+export default ReplySuggestions;

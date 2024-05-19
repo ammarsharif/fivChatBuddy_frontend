@@ -3,16 +3,17 @@ let iframeExists = false;
   chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     const mainDiv = document.querySelector('.message-action-bar .flex.flex-row.flex-items-center');
     if (mainDiv) {
-      
       if (!document.getElementById('myInjectButton')) {
         const button = document.createElement('img');
         button.src = 'https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png';
         button.alt = 'icon';
         button.id = 'myInjectButton';
-        button.style.width = '40px';
-        button.style.height = '22px';
+        button.style.width = '43px';
+        button.style.height = '24px';
         button.style.borderRadius = '50%';
         button.style.marginRight = '-30px';
+        button.style.position = 'absolute';
+        button.style.right = '6.5em';
         button.style.cursor = 'pointer';
         button.addEventListener('click', function () {
           iframeExists = false;
@@ -108,8 +109,8 @@ let suggestedTextClicked = false;
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.action === 'setResponseInReplyInput' && !suggestedTextClicked) {
-    const replyDiv = document.querySelector(
-      '.Am.aiL.aO9.Al.editable.LW-avf.tS-tW'
+    const replyDiv = document.getElementById(
+      'message-box-text-area'
     );
     if (replyDiv) {
       const responseText = message.response;
