@@ -118,9 +118,8 @@ const ReplySuggestions: React.FC = () => {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
-          'X-RapidAPI-Key':
-            '198bada44amshd95219dc04db750p14af07jsne52453168165-123',
-          'X-RapidAPI-Host': 'chatgpt-42.p.rapidapi.com',
+          'Authorization':
+            'Bearer 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',
         },
         body: JSON.stringify({
           messages: [
@@ -130,10 +129,12 @@ const ReplySuggestions: React.FC = () => {
             },
           ],
           web_access: false,
+          model: 'mixtral-8x7b-32768',
         }),
       });
 
-      const data = await response.json();
+      const dataJson = await response.json();
+      const data = dataJson.choices[0].message.content;
       if (data.result) {
         console.log(data.result, 'API response DATA contain result');
         setResponseText(data.result);
