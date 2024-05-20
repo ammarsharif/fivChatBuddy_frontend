@@ -88,7 +88,7 @@ const ReplySuggestions: React.FC = () => {
   useEffect(() => {
     const messageListener = (message: any) => {
       if (message.action === 'receiveEmailText') {
-        const emailText = `Please add give a formal reply to this email and don't add prompt like here is you email and all stuff just give me the proper response in a good way \n ${message?.response}`;
+        const emailText = `Act as a content creation consultant to assist the seller in crafting reply messages. Here is the messages...\n ${message?.response}\n So as you see each message should conclude by specifying whether it is from the seller or the buyer and your  task is to help the seller respond to the buyer's messages efficiently and attractively, maintaining an formal tone for the situation\n make sure the answer should be short in length not more than 20 words as this is chat not an email so i want reply in short and perfect according to given situation\nRemember that don't add the extra lines like here is your text or any warm regard or any thing that usedd to be in bracker like [seller] or any other this just give to the point text so I can just copy and paste it right`;
         const modifiedEmailText = emailText?.replace('formal', selectedTone);
         if (modifiedEmailText && modifiedEmailText.includes(selectedTone)) {
           generateResponse(modifiedEmailText);
