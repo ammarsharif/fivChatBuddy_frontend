@@ -159,11 +159,13 @@ const ReplySuggestions: React.FC = () => {
   }, [responseText]);
 
   const handleResponseClick = (response: string) => {
-    chrome.runtime.sendMessage({
-      action: 'suggestedText',
-      suggestion: response,
-    });
-    console.log(response);
+    if (response !== undefined) {
+      chrome.runtime.sendMessage({
+        action: 'suggestedText',
+        suggestion: response,
+      });
+      console.log(response);
+    }
   };
 
   const handleCloseButton = () => {

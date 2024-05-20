@@ -107,41 +107,36 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 let suggestedTextClicked = false;
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  if (message.action === 'setResponseInReplyInput' && !suggestedTextClicked) {
-    const replyDiv = document.getElementById(
-      'message-box-text-area'
-    );
-    if (replyDiv) {
-      const responseText = message.response;
-      const commaIndex = responseText?.indexOf(',');
-      const salutation = responseText?.substring(0, commaIndex + 1);
-      const restOfResponse = responseText?.substring(commaIndex + 1);
-      const styledResponse = `
-        <div style="line-height: 2; font-family: Arial, sans-serif;">
-          ${salutation}<br><br>
-          ${restOfResponse}<br><br>
-          Best regards,<br>
-          [Your Name]
-        </div>`;
-      replyDiv.innerHTML = styledResponse;
-    }
-  }
-});
+// chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+//   if (message.action === 'setResponseInReplyInput' && !suggestedTextClicked) {
+//     const replyDiv = document.getElementById(
+//       'message-box-text-area'
+//     );
+//     console.log(replyDiv,'REPLY DIV::::::');
+    
+//     if (replyDiv) {
+//       const responseText = message.response;
+//       replyDiv.innerHTML = responseText;
+//     }
+//   }
+// });
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.action === 'suggestedText') {
     suggestedTextClicked = true;
-    const replyInput = document.querySelector(
-      '.Am.aiL.aO9.Al.editable.LW-avf.tS-tW'
-    );
-    if (replyInput) {
-      replyInput.textContent = message.suggestedText;
-    } else {
-      console.log('Reply input not found');
+    const textarea = document.getElementById('message-box-text-area') as HTMLTextAreaElement;
+    if (textarea) {
+      textarea.value = message.suggestedText;
+      textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    const ruler = document.querySelector('.ruler');
+    if (ruler) {
+      ruler.textContent = message.suggestedText;
     }
   }
 });
+
+
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.action === 'generateEmailText') {
