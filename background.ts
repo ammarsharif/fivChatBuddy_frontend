@@ -63,9 +63,9 @@ const textFinder = (): string | null => {
     }
   }
 
-  const lastFourMessages = resultArray.slice(-10);
+  const lastTenMessages = resultArray.slice(-10);
 
-  const combinedText = lastFourMessages.join('\n');
+  const combinedText = lastTenMessages.join('\n');
   console.log(combinedText, 'COMBINED TEXT :::::');
 
   return combinedText;
@@ -79,10 +79,13 @@ const clickHandler = async (emailText: any) => {
   const activeTab = tabs[0];
   if (activeTab && activeTab.id) {
     chrome.tabs.sendMessage(activeTab.id, { action: 'clickReplyButton' });
-    chrome.tabs.sendMessage(activeTab.id, {
-      action: 'receiveEmailText',
-      response: emailText,
-    });
+setTimeout(() => {
+  if (activeTab && activeTab.id)
+  chrome.tabs.sendMessage(activeTab.id, {
+    action: 'receiveEmailText',
+    response: emailText,
+  });
+}, 200);
   } else {
     console.log('No active tab found');
   }
