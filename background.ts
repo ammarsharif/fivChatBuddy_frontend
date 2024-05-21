@@ -35,7 +35,8 @@ const textFinder = (): string | null => {
 
   const additionalTexts = document.querySelectorAll('.text.tbody-6.p-t-4');
   const additionalTextsLength = additionalTexts.length;
-  const additionalTextsStartIndex = additionalTextsLength >= 7 ? additionalTextsLength - 7 : 0;
+  const additionalTextsStartIndex =
+    additionalTextsLength >= 10 ? additionalTextsLength - 10 : 0;
 
   for (let i = additionalTextsStartIndex; i < additionalTextsLength; i++) {
     const textContent = additionalTexts[i].textContent?.trim() ?? '';
@@ -44,11 +45,14 @@ const textFinder = (): string | null => {
   }
 
   const messageContentsLength = messageContents.length;
-  const messageContentsStartIndex = messageContentsLength >= 7 ? messageContentsLength - 7 : 0;
+  const messageContentsStartIndex =
+    messageContentsLength >= 10 ? messageContentsLength - 10 : 0;
 
   for (let i = messageContentsStartIndex; i < messageContentsLength; i++) {
     const content = messageContents[i];
-    const senderElement = content.querySelector('[data-testid="basic-message-header"]');
+    const senderElement = content.querySelector(
+      '[data-testid="basic-message-header"]'
+    );
     const role = senderElement ? 'buyer' : 'seller';
 
     const messageBody = content.querySelector('.message-body');
@@ -59,78 +63,28 @@ const textFinder = (): string | null => {
     }
   }
 
-  const lastFourMessages = resultArray.slice(-4); // Selecting only the last four messages
-  
+  const lastFourMessages = resultArray.slice(-10);
+
   const combinedText = lastFourMessages.join('\n');
   console.log(combinedText, 'COMBINED TEXT :::::');
 
-  return `Act as a content creation consultant to assist the seller in crafting reply messages. Here is the messages...\n ${combinedText}\n So as you see each message should conclude by specifying whether it is from the seller or the buyer and your  task is to help the seller respond to the buyer's messages efficiently and attractively, maintaining an formal tone for the situation\n make sure the answer should be short in length not more than 20 words as this is chat not an email so i want reply in short and perfect according to given situation\nRemember that don't add the extra lines like here is your text or any warm regard or any thing that usedd to be in bracker like [seller] or any other this just give to the point text so I can just copy and paste it right`;
+  return combinedText;
 };
 
 const clickHandler = async (emailText: any) => {
-  try {
-    const response = await fetch('https://chatgpt-42.p.rapidapi.com/gpt4', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'X-RapidAPI-Key':
-          '01d3db204bmshd41c53a6ae8a9d6p15c871jsned9d98a1c36e',
-        'X-RapidAPI-Host': 'chatgpt-42.p.rapidapi.com',
-      },
-      body: JSON.stringify({
-        messages: [
-          {
-            role: 'user',
-            content: emailText,
-          },
-        ],
-        web_access: false,
-      }),
+  const tabs = await chrome.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
+  const activeTab = tabs[0];
+  if (activeTab && activeTab.id) {
+    chrome.tabs.sendMessage(activeTab.id, { action: 'clickReplyButton' });
+    chrome.tabs.sendMessage(activeTab.id, {
+      action: 'receiveEmailText',
+      response: emailText,
     });
-
-    const data = await response.json();
-    if (data.result) {
-      const tabs = await chrome.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      const activeTab = tabs[0];
-      if (activeTab && activeTab.id) {
-        chrome.tabs.sendMessage(activeTab.id, { action: 'clickReplyButton' });
-        chrome.tabs.sendMessage(activeTab.id, {
-          action: 'setResponseInReplyInput',
-          response: data.result,
-        });
-        chrome.tabs.sendMessage(activeTab.id, {
-          action: 'receiveEmailText',
-          response: 'PROPER RESPONSE GENERATED FROM THE API Call',
-        });
-      } else {
-        console.log('No active tab found');
-      }
-    } else {
-      const tabs = await chrome.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      const activeTab = tabs[0];
-      if (activeTab && activeTab.id) {
-        chrome.tabs.sendMessage(activeTab.id, { action: 'clickReplyButton' });
-        chrome.tabs.sendMessage(activeTab.id, {
-          action: 'setResponseInReplyInput',
-          response: data.result,
-        });
-        chrome.tabs.sendMessage(activeTab.id, {
-          action: 'receiveEmailText',
-          response: emailText,
-        });
-      } else {
-        console.log('No active tab found');
-      }
-      console.log('API response does not contain result');
-    }
-  } catch (error) {
-    console.error('Error:', error);
+  } else {
+    console.log('No active tab found');
   }
 };
 
@@ -140,13 +94,14 @@ chrome.runtime.onMessage.addListener(async function (
   sendResponse
 ) {
   if (message.action === 'generateEmailText') {
-    const suggestedText = message.selectedTone;
+    const { selectedTone, selectedRole } = message;
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
     const activeTab = tabs[0];
     if (activeTab && activeTab.id) {
       chrome.tabs.sendMessage(activeTab.id, {
         action: 'generateEmailText',
-        suggestedText: suggestedText,
+        selectedTone: selectedTone,
+        selectedRole: selectedRole,
       });
     }
   }

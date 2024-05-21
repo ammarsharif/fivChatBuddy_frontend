@@ -2,11 +2,10 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 
 const ReplySuggestions: React.FC = () => {
   const containerStyle = {
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#fffff',
     padding: '20px',
     width: '350px',
     margin: '-12px',
-    paddingBottom: '22em',
     fontFamily: 'Arial, sans-serif',
   };
 
@@ -32,20 +31,27 @@ const ReplySuggestions: React.FC = () => {
     display: 'flex',
   };
 
-  const dividerStyle = {
+  const headDivider = {
     width: '100%',
     border: 'none',
     borderBottom: '1px solid #ccc',
-    margin: '18px 0px 10px 0px',
+    margin: '18px 0px 6px 0px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  };
+
+  const replyDivider = {
+    width: '100%',
+    border: 'none',
+    borderBottom: '1px solid #ccc',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   };
 
   const selectContainerStyle = {
     display: 'flex',
     alignItems: 'center',
-    border: 'none',
     borderRadius: '5px',
-    marginRight: '5px',
+    padding: '0px 7px',
+    marginRight: '15px',
   };
 
   const selectStyle = {
@@ -53,42 +59,70 @@ const ReplySuggestions: React.FC = () => {
     padding: '10px 0px 10px 6px',
     borderRadius: '10px',
     border: 'none',
-    marginRight: '6px',
+    margin: '0px',
     backgroundColor: '#def8ff',
-    fontSize: '15px',
+    fontSize: '13.5px',
     outline: 'none',
   };
 
   const responseItemStyle = {
     cursor: 'pointer',
     padding: '8px',
-    marginBottom: '2px',
-    backgroundColor: '#eaeaea',
+    margin: '5px 0px',
+    backgroundColor: '#fffff',
     borderRadius: '4px',
     lineHeight: '1.5',
     fontFamily: 'Arial, sans-serif',
+    color: '#4d4d4d',
     fontSize: '14px',
     transition: 'background-color 0.3s ease',
   };
 
   const closeButton = {
     marginTop: '0px',
-    height: '25px',
+    height: '35px',
+    width: '35px',
     fontSize: '20px',
-    color: '#a5a5a5',
+    color: '#87150b',
     backgroundColor: 'transparent',
     border: 'none',
     cursor: 'pointer',
   };
 
-  const [responseText, setResponseText] = useState<string | null>(null);
+  const reloadButtonStyle = {
+    position: 'absolute',
+    right: '1.3em',
+    backgroundColor: '#1dbf73',
+    border: 'none',
+    borderRadius: '50%',
+    width: '22px',
+    height: '22px',
+    color: 'white',
+    fontSize: '20px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  const [responseText, setResponseText] = useState<{ text: string }[] | null>(
+    null
+  );
   const [selectedTone, setSelectedTone] = useState<string>('formal');
+  const [selectedRole, setSelectedRole] = useState<string>('seller');
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const messageListener = (message: any) => {
       if (message.action === 'receiveEmailText') {
-        const emailText = `Act as a content creation consultant to assist the seller in crafting reply messages. Here is the messages...\n ${message?.response}\n So as you see each message should conclude by specifying whether it is from the seller or the buyer and your  task is to help the seller respond to the buyer's messages efficiently and attractively, maintaining an formal tone for the situation\n make sure the answer should be short in length not more than 20 words as this is chat not an email so i want reply in short and perfect according to given situation\nRemember that don't add the extra lines like here is your text or any warm regard or any thing that usedd to be in bracker like [seller] or any other this just give to the point text so I can just copy and paste it right`;
+        console.log(message.response, 'FROM THE READER::::::');
+        const emailText = `Act as a content creator consultant to assist me that I am ${selectedRole} and I have to deal with the ${
+          selectedRole === 'seller' ? 'buyer' : 'seller'
+        } in crafting reply messages. Here is the messages...\n ${
+          message?.response
+        }\n So as you see each message should conclude by specifying whether it is from the seller or the buyer and your  task is to help the ${selectedRole} respond to the ${
+          selectedRole === 'seller' ? 'buyer' : 'seller'
+        }'s messages efficiently and attractively, maintaining an formal tone for the situation\n make sure the answer should be short an perfect for situation not more than 25 words\nRemember that don't add the extra lines like here is your text or any warm regard or any thing that used to be in bracket like [seller] or any other this just give to the point text so I can just copy and paste it right\nalso while generating the response you have to generate only one response I need only one response and don't specify at the end that wether it is from [seller] or [buyer]\njust just give a reply in formal tone so i just copy and paste it right`;
         const modifiedEmailText = emailText?.replace('formal', selectedTone);
         if (modifiedEmailText && modifiedEmailText.includes(selectedTone)) {
           generateResponse(modifiedEmailText);
@@ -100,12 +134,26 @@ const ReplySuggestions: React.FC = () => {
     return () => {
       chrome.runtime.onMessage.removeListener(messageListener);
     };
-  }, [selectedTone]);
+  }, [selectedTone, selectedRole]);
 
   const handleToneChange = async (event: ChangeEvent<HTMLSelectElement>) => {
     const tone = event.target.value;
     setSelectedTone(tone);
     chrome.runtime.sendMessage({ action: 'generateEmailText' });
+  };
+  const handleRoleChange = async (event: ChangeEvent<HTMLSelectElement>) => {
+    const role = event.target.value;
+    setSelectedRole(role);
+    chrome.runtime.sendMessage({ action: 'generateEmailText' });
+  };
+
+  const handleReloadClick = async () => {
+    setLoading(true);
+    chrome.runtime.sendMessage({
+      action: 'generateEmailText',
+      selectedTone: selectedTone,
+      selectedRole: selectedRole,
+    });
   };
 
   const generateResponse = async (modifiedEmailText: string) => {
@@ -114,32 +162,46 @@ const ReplySuggestions: React.FC = () => {
       console.log(
         'Generating Response of ' + modifiedEmailText + '. Please wait...'
       );
-      const response = await fetch('https://chatgpt-42.p.rapidapi.com/gpt4', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          'Authorization':
-            'Bearer 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',
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: 'user',
-              content: modifiedEmailText,
-            },
-          ],
-          web_access: false,
-          model: 'mixtral-8x7b-32768',
-        }),
-      });
 
-      const dataJson = await response.json();
-      const data = dataJson.choices[0].message.content;
-      if (data.result) {
-        console.log(data.result, 'API response DATA contain result');
-        setResponseText(data.result);
+      const responses: { text: string }[] = [];
+
+      for (let i = 0; i < 3; i++) {
+        const response = await fetch(
+          'https://openrouter.ai/api/v1/chat/completions',
+          {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json',
+              Authorization:
+                'Bearer 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',
+            },
+            body: JSON.stringify({
+              messages: [
+                {
+                  role: 'user',
+                  content: modifiedEmailText,
+                },
+              ],
+              model: 'openai/gpt-3.5-turbo',
+              max_tokens: 200,
+            }),
+          }
+        );
+
+        const dataJson = await response.json();
+        const choice = dataJson.choices[0];
+        const responseContent = choice?.message.content;
+
+        if (responseContent) {
+          responses.push({ text: responseContent });
+        }
+      }
+
+      if (responses.length === 3) {
+        console.log(responses, 'API response DATA contain result');
+        setResponseText(responses);
       } else {
-        console.log('API response does not contain result');
+        console.log('API response does not contain three results');
         return null;
       }
     } catch (error) {
@@ -149,15 +211,6 @@ const ReplySuggestions: React.FC = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const replyDiv = document.querySelector('.response');
-    console.log(replyDiv,'REply, ', responseText);
-    
-    if (replyDiv && responseText) {
-      replyDiv.innerHTML = responseText;
-    }
-  }, [responseText]);
 
   const handleResponseClick = (response: string) => {
     if (response !== undefined) {
@@ -177,6 +230,7 @@ const ReplySuggestions: React.FC = () => {
     <div
       style={{
         ...containerStyle,
+        position: 'relative',
       }}
     >
       <div>
@@ -209,40 +263,100 @@ const ReplySuggestions: React.FC = () => {
                 <option value="grateful">🙏 Grateful</option>
               </select>
             </div>
+            <div style={selectContainerStyle}>
+              <select
+                id="roleSelect"
+                style={{ ...selectStyle }}
+                onChange={handleRoleChange}
+              >
+                <option value="seller">Seller</option>
+                <option value="buyer">Buyer</option>
+              </select>
+            </div>
             <button
               className="close_button"
               style={closeButton}
               onClick={() => handleCloseButton()}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#ffecec';
+                e.currentTarget.style.borderRadius = '50%';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#ffffff';
+              }}
             >
               &#x2715;
             </button>
           </div>
         </div>
-        <hr style={dividerStyle} />
+        <hr style={headDivider} />
         <div>
           {loading ? (
             <div className="spinner"></div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <p
-                style={{
-                  ...responseItemStyle,
-                  transition: 'background-color 0.3s ease',
-                }}
-                onClick={() =>
-                  handleResponseClick(responseText || 'No response available')
-                }
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f0f0f0';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#e6e6e6';
-                }}
-              >
-                {responseText || 'No response available'}
-              </p>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              {responseText ? (
+                responseText.map((response, index) => (
+                  <div key={index}>
+                    <p
+                      style={{
+                        ...responseItemStyle,
+                        transition: 'background-color 0.3s ease',
+                      }}
+                      onClick={() => handleResponseClick(response.text)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#f7f7f7';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#ffffff';
+                      }}
+                    >
+                      {response.text}
+                    </p>
+                    {index < responseText.length - 1 && (
+                      <hr style={replyDivider} />
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p
+                  style={{
+                    ...responseItemStyle,
+                    fontFamily: 'Arial, sans-serif',
+                  }}
+                >
+                  No response available
+                </p>
+              )}
             </div>
           )}
+          {!loading ? (
+            <button
+              style={{
+                ...reloadButtonStyle,
+                position: 'absolute',
+                bottom:
+                  responseText && responseText.length > 0 ? '-1em' : '1.6em',
+              }}
+              onClick={handleReloadClick}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="white"
+                width="24px"
+                height="24px"
+              >
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+              </svg>
+            </button>
+          ) : null}
         </div>
       </div>
     </div>
