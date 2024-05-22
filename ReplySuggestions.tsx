@@ -1,4 +1,6 @@
 import React, { ChangeEvent, useEffect, useState, useRef } from 'react';
+import { FaRegPaste } from "react-icons/fa6";
+import { TbReload } from "react-icons/tb";
 
 const ReplySuggestions: React.FC = () => {
   const containerStyle = {
@@ -12,14 +14,15 @@ const ReplySuggestions: React.FC = () => {
   const headingStyle = {
     color: '#333',
     fontSize: '17px',
-    fontWeight: 'bold',
+    fontWeight: '600',
     margin: '10px 5px 10px -2px',
+    fontFamily: 'Arial, sans-serif'
   };
 
   const header = {
     display: 'flex',
     justifyContent: 'space-between',
-    marginBottom: '10px',
+    marginBottom: '2px',
   };
 
   const logoHeader = {
@@ -29,13 +32,15 @@ const ReplySuggestions: React.FC = () => {
 
   const toneHeader = {
     display: 'flex',
+    justifyContent: 'space-between',
+    gap: '10px',
   };
 
   const headDivider = {
-    width: '100%',
+    width: '97%',
     border: 'none',
     borderBottom: '1px solid #ccc',
-    margin: '18px 0px 6px 0px',
+    margin: '0px 0px 15px 0px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   };
 
@@ -49,25 +54,26 @@ const ReplySuggestions: React.FC = () => {
   const selectContainerStyle = {
     display: 'flex',
     alignItems: 'center',
-    borderRadius: '5px',
-    padding: '0px 7px',
-    marginRight: '15px',
+    justifyContent: 'center',
+    marginRight: '10px', 
+    flex: '1',
   };
 
   const selectStyle = {
     width: '100%',
-    padding: '10px 0px 10px 6px',
-    borderRadius: '10px',
+    padding: '8px 11px 8px 11px',
+    borderRadius: '6px',
     border: 'none',
     margin: '0px',
-    backgroundColor: '#def8ff',
-    fontSize: '13.5px',
+    backgroundColor: '#F1F1F1',
+    fontSize: '14px',
     outline: 'none',
+    gap:'38px,'
   };
 
   const responseItemStyle = {
     cursor: 'pointer',
-    padding: '8px',
+    padding: '2px 8px 0px',
     margin: '5px 0px',
     backgroundColor: '#fffff',
     borderRadius: '4px',
@@ -103,6 +109,14 @@ const ReplySuggestions: React.FC = () => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  };
+
+  const copyIconStyle = {
+    cursor: 'pointer',
+    marginLeft: '10px',
+    fontSize: '16px',
+    display:'flex',
+    flexDirection: 'row-reverse'
   };
 
   const [responseText, setResponseText] = useState<{ text: string }[] | null>(
@@ -177,7 +191,7 @@ const ReplySuggestions: React.FC = () => {
             headers: {
               'content-type': 'application/json',
               Authorization:
-                'Bearer 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-123',
+                'Bearer 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',
             },
             body: JSON.stringify({
               messages: [
@@ -243,42 +257,13 @@ const ReplySuggestions: React.FC = () => {
           <div style={logoHeader}>
             <img
               src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
-              height={'28px'}
-              width={'50px'}
+              height={'24px'}
+              width={'42px'}
               style={{ borderRadius: '50%' }}
             ></img>
-            <p style={headingStyle}>Suggestion...</p>
+            <p style={headingStyle}>A.I Suggested Replies</p>
           </div>
-          <div style={toneHeader}>
-            <div style={selectContainerStyle}>
-              <select
-                id="toneSelect"
-                style={{ ...selectStyle }}
-                onChange={handleToneChange}
-              >
-                <option value="formal">👔 Formal</option>
-                <option value="persuasive">🗣️ Persuasive</option>
-                <option value="friendly">😊 Friendly</option>
-                <option value="enthusiastic">🌟 Enthusiastic</option>
-                <option value="empathetic">🤗 Empathetic</option>
-                <option value="assertive">💪 Assertive</option>
-                <option value="apologetic">🙏 Apologetic</option>
-                <option value="informative">📘 Informative</option>
-                <option value="reassuring">🤝 Reassuring</option>
-                <option value="grateful">🙏 Grateful</option>
-              </select>
-            </div>
-            <div style={selectContainerStyle}>
-              <select
-                id="roleSelect"
-                style={{ ...selectStyle }}
-                onChange={handleRoleChange}
-              >
-                <option value="seller">Seller</option>
-                <option value="buyer">Buyer</option>
-              </select>
-            </div>
-            <button
+          <button
               className="close_button"
               style={closeButton}
               onClick={() => handleCloseButton()}
@@ -292,9 +277,39 @@ const ReplySuggestions: React.FC = () => {
             >
               &#x2715;
             </button>
-          </div>
         </div>
         <hr style={headDivider} />
+        <div style={toneHeader}>
+            <div style={selectContainerStyle}>
+              <select
+                id="toneSelect"
+                style={{ ...selectStyle }}
+                onChange={handleToneChange}
+              >
+                <option value="formal">Formal</option>
+                <option value="persuasive">Persuasive</option>
+                <option value="friendly">Friendly</option>
+                <option value="enthusiastic">Enthusiastic</option>
+                <option value="empathetic">Empathetic</option>
+                <option value="assertive">Assertive</option>
+                <option value="apologetic">Apologetic</option>
+                <option value="informative">Informative</option>
+                <option value="reassuring">Reassuring</option>
+                <option value="grateful">Grateful</option>
+              </select>
+            </div>
+            <div style={selectContainerStyle}>
+              <select
+                id="roleSelect"
+                style={{ ...selectStyle }}
+                onChange={handleRoleChange}
+              >
+                <option value="seller">Seller</option>
+                <option value="buyer">Buyer</option>
+              </select>
+            </div>
+
+          </div>
         <div>
           {loading ? (
             <div className="spinner"></div>
@@ -303,6 +318,7 @@ const ReplySuggestions: React.FC = () => {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
+                marginTop:'10px'
               }}
             >
               {responseText ? (
@@ -322,6 +338,17 @@ const ReplySuggestions: React.FC = () => {
                       }}
                     >
                       {response.text}
+                      {!loading ? (
+                      <span
+                        style={copyIconStyle}
+                        onClick={(e) => {
+                          e.stopPropagation(); 
+                          handleResponseClick(response.text);
+                        }}
+                      >
+                                  <FaRegPaste />
+                      </span>
+                      ):null}
                     </p>
                     {index < responseText.length - 1 && (
                       <hr style={replyDivider} />
@@ -350,16 +377,7 @@ const ReplySuggestions: React.FC = () => {
               }}
               onClick={handleReloadClick}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="white"
-                width="24px"
-                height="24px"
-              >
-                <path d="M0 0h24v24H0z" fill="none" />
-                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
-              </svg>
+              <TbReload/>
             </button>
           ) : null}
         </div>
