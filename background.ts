@@ -66,7 +66,6 @@ const textFinder = (): string | null => {
   const lastTenMessages = resultArray.slice(-10);
 
   const combinedText = lastTenMessages.join('\n');
-  console.log(combinedText, 'COMBINED TEXT :::::');
 
   return combinedText;
 };

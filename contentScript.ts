@@ -1,6 +1,6 @@
 let iframeExists = false;
 
-chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+const addButtonToPage = () => {
   const mainDiv = document.querySelector(
     '.message-action-bar .flex.flex-row.flex-items-center'
   );
@@ -26,38 +26,22 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
       mainDiv.appendChild(button);
     }
   }
-  // else if (!mainDiv) {
-  //   const mainSmallDiv = document.querySelector('.J-J5-Ji.btA');
-  //   if (!document.getElementById('myInjectSmallButton')) {
-  //     const button = document.createElement('img');
-  //     button.src = 'https://media.licdn.com/dms/image/D4D0BAQGd8H31h5niqg/company-logo_200_200/0/1712309492132/evolvebay_logo?e=2147483647&v=beta&t=tSYT6EkXf7aP709xw1DbPc41AbobGq6qtM5PC1El__I';
-  //     button.alt = 'icon';
-  //     button.id = 'myInjectSmallButton';
-  //     button.style.width = '28px';
-  //     button.style.height = '28px';
-  //     button.style.borderRadius = '20px';
-  //     button.style.marginLeft = '10px';
-  //     button.style.marginRight = '2px';
-  //     button.style.cursor = 'pointer';
+};
 
-  //     button.addEventListener('click', function () {
-  //       iframeExists = false;
-  //       // chrome.runtime.sendMessage({ action: 'authenticateWithGoogle' });
-  //     });
+window.onload = function () {
+  setTimeout(() => {
+    addButtonToPage();
+  }, 500);
+};
 
-  //     const firstSpan = mainSmallDiv?.querySelector('span');
-  //     if (firstSpan) {
-  //       mainSmallDiv?.insertBefore(button, firstSpan);
-  //     } else {
-  //       mainSmallDiv?.appendChild(button);
-  //     }
-  //   }
-  // }
+document.addEventListener('click', (event) => {
+  console.log('BUTTON EXECUTED:::::::');
+  setTimeout(() => {
+    addButtonToPage();
+  }, 500);
 });
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  console.log(message, 'MEssage from reply::::::');
-
   if (message.action === 'clickReplyButton') {
     const replyButton = document.querySelector(
       '.ams.bkH'

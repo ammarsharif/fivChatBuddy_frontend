@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState, useRef } from 'react';
 
 const ReplySuggestions: React.FC = () => {
   const containerStyle = {
@@ -111,11 +111,11 @@ const ReplySuggestions: React.FC = () => {
   const [selectedTone, setSelectedTone] = useState<string>('formal');
   const [selectedRole, setSelectedRole] = useState<string>('seller');
   const [loading, setLoading] = useState<boolean>(false);
+  const useRefState = useRef(false);
 
   useEffect(() => {
     const messageListener = (message: any) => {
-      if (message.action === 'receiveEmailText') {
-        console.log(message.response, 'FROM THE READER::::::');
+      if (message.action === 'receiveEmailText' && !useRefState.current) {
         const emailText = `Act as a content creator consultant to assist me that I am ${selectedRole} and I have to deal with the ${
           selectedRole === 'seller' ? 'buyer' : 'seller'
         } in crafting reply messages. Here is the messages...\n ${
@@ -126,6 +126,7 @@ const ReplySuggestions: React.FC = () => {
         const modifiedEmailText = emailText?.replace('formal', selectedTone);
         if (modifiedEmailText && modifiedEmailText.includes(selectedTone)) {
           generateResponse(modifiedEmailText);
+          useRefState.current = true;
         }
       }
     };
@@ -139,16 +140,19 @@ const ReplySuggestions: React.FC = () => {
   const handleToneChange = async (event: ChangeEvent<HTMLSelectElement>) => {
     const tone = event.target.value;
     setSelectedTone(tone);
+    useRefState.current = false;
     chrome.runtime.sendMessage({ action: 'generateEmailText' });
   };
   const handleRoleChange = async (event: ChangeEvent<HTMLSelectElement>) => {
     const role = event.target.value;
     setSelectedRole(role);
+    useRefState.current = false;
     chrome.runtime.sendMessage({ action: 'generateEmailText' });
   };
 
   const handleReloadClick = async () => {
     setLoading(true);
+    useRefState.current = false;
     chrome.runtime.sendMessage({
       action: 'generateEmailText',
       selectedTone: selectedTone,
@@ -159,9 +163,9 @@ const ReplySuggestions: React.FC = () => {
   const generateResponse = async (modifiedEmailText: string) => {
     try {
       setLoading(true);
-      console.log(
-        'Generating Response of ' + modifiedEmailText + '. Please wait...'
-      );
+      // console.log(
+      //   'Generating Response of ' + modifiedEmailText + '. Please wait...'
+      // );
 
       const responses: { text: string }[] = [];
 
@@ -173,7 +177,7 @@ const ReplySuggestions: React.FC = () => {
             headers: {
               'content-type': 'application/json',
               Authorization:
-                'Bearer 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',
+                'Bearer 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-123',
             },
             body: JSON.stringify({
               messages: [
@@ -223,6 +227,7 @@ const ReplySuggestions: React.FC = () => {
   };
 
   const handleCloseButton = () => {
+    useRefState.current = false;
     chrome.runtime.sendMessage({ action: 'closeIframe' });
   };
 
