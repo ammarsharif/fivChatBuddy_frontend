@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useEffect, useState, useRef } from 'react';
-import { FaRegPaste } from "react-icons/fa6";
-import { TbReload } from "react-icons/tb";
+import { RxCross1 } from 'react-icons/rx';
+import { FaRegPaste } from 'react-icons/fa6';
+import { TbReload } from 'react-icons/tb';
 
 const ReplySuggestions: React.FC = () => {
   const containerStyle = {
@@ -16,7 +17,6 @@ const ReplySuggestions: React.FC = () => {
     fontSize: '17px',
     fontWeight: '600',
     margin: '10px 5px 10px -2px',
-    fontFamily: 'Arial, sans-serif'
   };
 
   const header = {
@@ -55,7 +55,7 @@ const ReplySuggestions: React.FC = () => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: '10px', 
+    marginRight: '10px',
     flex: '1',
   };
 
@@ -68,11 +68,10 @@ const ReplySuggestions: React.FC = () => {
     backgroundColor: '#F1F1F1',
     fontSize: '14px',
     outline: 'none',
-    gap:'38px,'
+    gap: '38px,',
   };
 
   const responseItemStyle = {
-    cursor: 'pointer',
     padding: '2px 8px 0px',
     margin: '5px 0px',
     backgroundColor: '#fffff',
@@ -83,16 +82,29 @@ const ReplySuggestions: React.FC = () => {
     fontSize: '14px',
     transition: 'background-color 0.3s ease',
   };
+  const noResponseStyle = {
+    padding: '0px 8px 0px',
+    margin: '10px 0px',
+    backgroundColor: '#fffff',
+    borderRadius: '4px',
+    lineHeight: '1.5',
+    fontFamily: 'Arial, sans-serif',
+    color: '#4d4d4d',
+    fontSize: '16px',
+    transition: 'background-color 0.3s ease',
+  };
 
   const closeButton = {
     marginTop: '0px',
-    height: '35px',
-    width: '35px',
-    fontSize: '20px',
-    color: '#87150b',
+    width: '25px',
+    height: '25px',
+    fontSize: '14px',
+    color: 'black',
     backgroundColor: 'transparent',
+    borderRadius: '50%',
     border: 'none',
     cursor: 'pointer',
+    paddingTop: '4px',
   };
 
   const reloadButtonStyle = {
@@ -101,8 +113,8 @@ const ReplySuggestions: React.FC = () => {
     backgroundColor: '#1dbf73',
     border: 'none',
     borderRadius: '50%',
-    width: '22px',
-    height: '22px',
+    width: '25px',
+    height: '25px',
     color: 'white',
     fontSize: '20px',
     cursor: 'pointer',
@@ -114,9 +126,13 @@ const ReplySuggestions: React.FC = () => {
   const copyIconStyle = {
     cursor: 'pointer',
     marginLeft: '10px',
+    marginBottom: '4px',
     fontSize: '16px',
-    display:'flex',
-    flexDirection: 'row-reverse'
+    width: '20px',
+    height: '20px',
+    border: 'none',
+    borderRadius: '50%',
+    padding: '5px 4px 5px 8px',
   };
 
   const [responseText, setResponseText] = useState<{ text: string }[] | null>(
@@ -177,13 +193,7 @@ const ReplySuggestions: React.FC = () => {
   const generateResponse = async (modifiedEmailText: string) => {
     try {
       setLoading(true);
-      // console.log(
-      //   'Generating Response of ' + modifiedEmailText + '. Please wait...'
-      // );
-
-      const responses: { text: string }[] = [];
-
-      for (let i = 0; i < 3; i++) {
+      const fetchResponse = async () => {
         const response = await fetch(
           'https://openrouter.ai/api/v1/chat/completions',
           {
@@ -205,21 +215,26 @@ const ReplySuggestions: React.FC = () => {
             }),
           }
         );
-
         const dataJson = await response.json();
         const choice = dataJson.choices[0];
         const responseContent = choice?.message.content;
 
-        if (responseContent) {
-          responses.push({ text: responseContent });
-        }
-      }
+        return responseContent ? { text: responseContent } : null;
+      };
+      const responses = await Promise.all([
+        fetchResponse(),
+        fetchResponse(),
+        fetchResponse(),
+      ]);
+      const validResponses = responses.filter(
+        (response) => response !== null
+      ) as { text: string }[];
 
-      if (responses.length === 3) {
-        console.log(responses, 'API response DATA contain result');
-        setResponseText(responses);
+      if (validResponses.length === 3) {
+        console.log(validResponses, 'VALID RESPONSE:::::');
+
+        setResponseText(validResponses);
       } else {
-        console.log('API response does not contain three results');
         return null;
       }
     } catch (error) {
@@ -264,52 +279,51 @@ const ReplySuggestions: React.FC = () => {
             <p style={headingStyle}>A.I Suggested Replies</p>
           </div>
           <button
-              className="close_button"
-              style={closeButton}
-              onClick={() => handleCloseButton()}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#ffecec';
-                e.currentTarget.style.borderRadius = '50%';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#ffffff';
-              }}
-            >
-              &#x2715;
-            </button>
+            className="close_button"
+            style={closeButton}
+            onClick={() => handleCloseButton()}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#1dbf73';
+              e.currentTarget.style.borderRadius = '50%';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#ffffff';
+            }}
+          >
+            <RxCross1 />
+          </button>
         </div>
         <hr style={headDivider} />
         <div style={toneHeader}>
-            <div style={selectContainerStyle}>
-              <select
-                id="toneSelect"
-                style={{ ...selectStyle }}
-                onChange={handleToneChange}
-              >
-                <option value="formal">Formal</option>
-                <option value="persuasive">Persuasive</option>
-                <option value="friendly">Friendly</option>
-                <option value="enthusiastic">Enthusiastic</option>
-                <option value="empathetic">Empathetic</option>
-                <option value="assertive">Assertive</option>
-                <option value="apologetic">Apologetic</option>
-                <option value="informative">Informative</option>
-                <option value="reassuring">Reassuring</option>
-                <option value="grateful">Grateful</option>
-              </select>
-            </div>
-            <div style={selectContainerStyle}>
-              <select
-                id="roleSelect"
-                style={{ ...selectStyle }}
-                onChange={handleRoleChange}
-              >
-                <option value="seller">Seller</option>
-                <option value="buyer">Buyer</option>
-              </select>
-            </div>
-
+          <div style={selectContainerStyle}>
+            <select
+              id="toneSelect"
+              style={{ ...selectStyle }}
+              onChange={handleToneChange}
+            >
+              <option value="formal">Formal</option>
+              <option value="persuasive">Persuasive</option>
+              <option value="friendly">Friendly</option>
+              <option value="enthusiastic">Enthusiastic</option>
+              <option value="empathetic">Empathetic</option>
+              <option value="assertive">Assertive</option>
+              <option value="apologetic">Apologetic</option>
+              <option value="informative">Informative</option>
+              <option value="reassuring">Reassuring</option>
+              <option value="grateful">Grateful</option>
+            </select>
           </div>
+          <div style={selectContainerStyle}>
+            <select
+              id="roleSelect"
+              style={{ ...selectStyle }}
+              onChange={handleRoleChange}
+            >
+              <option value="seller">Seller</option>
+              <option value="buyer">Buyer</option>
+            </select>
+          </div>
+        </div>
         <div>
           {loading ? (
             <div className="spinner"></div>
@@ -318,7 +332,7 @@ const ReplySuggestions: React.FC = () => {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                marginTop:'10px'
+                marginTop: '10px',
               }}
             >
               {responseText ? (
@@ -330,25 +344,25 @@ const ReplySuggestions: React.FC = () => {
                         transition: 'background-color 0.3s ease',
                       }}
                       onClick={() => handleResponseClick(response.text)}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#f7f7f7';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '#ffffff';
-                      }}
                     >
                       {response.text}
                       {!loading ? (
-                      <span
-                        style={copyIconStyle}
-                        onClick={(e) => {
-                          e.stopPropagation(); 
-                          handleResponseClick(response.text);
-                        }}
-                      >
-                                  <FaRegPaste />
-                      </span>
-                      ):null}
+                        <span
+                          style={{ ...copyIconStyle, float: 'right' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleResponseClick(response.text);
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#d1ffda';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '#ffffff';
+                          }}
+                        >
+                          <FaRegPaste />
+                        </span>
+                      ) : null}
                     </p>
                     {index < responseText.length - 1 && (
                       <hr style={replyDivider} />
@@ -358,8 +372,7 @@ const ReplySuggestions: React.FC = () => {
               ) : (
                 <p
                   style={{
-                    ...responseItemStyle,
-                    fontFamily: 'Arial, sans-serif',
+                    ...noResponseStyle,
                   }}
                 >
                   No response available
@@ -372,12 +385,11 @@ const ReplySuggestions: React.FC = () => {
               style={{
                 ...reloadButtonStyle,
                 position: 'absolute',
-                bottom:
-                  responseText && responseText.length > 0 ? '-1em' : '1.6em',
+                bottom: responseText ? '-1em' : '1.6em',
               }}
               onClick={handleReloadClick}
             >
-              <TbReload/>
+              <TbReload />
             </button>
           ) : null}
         </div>
@@ -391,10 +403,10 @@ const spinnerStyle = `
   border: 3px solid ##bfe29d;
   border-radius: 50%;
   border-top: 3px solid #1dbf73;
-  width: 25px;
-  height: 25px;
+  width: 7em;
+  height: 7em;
   animation: spin 1s linear infinite;
-  margin: 11em auto;
+  margin: 9.5em auto;
 }
 
 @keyframes spin {

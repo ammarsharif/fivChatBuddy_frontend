@@ -84,7 +84,7 @@ setTimeout(() => {
     action: 'receiveEmailText',
     response: emailText,
   });
-}, 200);
+}, 300);
   } else {
     console.log('No active tab found');
   }
