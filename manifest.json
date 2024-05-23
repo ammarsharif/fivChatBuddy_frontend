@@ -3,7 +3,7 @@
   "name": "Fiverr Reader",
   "description": "Demo Chrome Extension that uses React and Webpack",
   "version": "1.0.0",
-  "permissions": ["activeTab", "scripting", "tabs", "identity","storage"],
+  "permissions": ["activeTab", "scripting", "tabs", "identity", "storage"],
   "action": {
     "default_popup": "index.html",
     "default_title": "Fiverr Reader"
@@ -17,13 +17,21 @@
       "js": ["contentScript.js"]
     }
   ],
-  "host_permissions": [
-    "http://*/*",
-    "https://*/*"
-  ],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "oauth2": {
+    "client_id": "306969940083-kid5l9d187chhsim9vqjam76pp0tj4bl.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/gmail.readonly",
+      "https://www.googleapis.com/auth/gmail.compose",
+      "https://www.googleapis.com/auth/gmail.modify",
+      "https://www.googleapis.com/auth/contacts.readonly",
+      "https://www.googleapis.com/auth/contacts",
+      "profile"
+    ]
+  },
   "web_accessible_resources": [
     {
-      "resources": ["index.html","iframe.html"],
+      "resources": ["index.html", "iframe.html", "infoModel.html", "tabInfoModel.html"],
       "matches": ["<all_urls>"]
     }
   ],

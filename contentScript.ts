@@ -1,4 +1,47 @@
 let iframeExists = false;
+let iUserProfile = false;
+chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+  console.log('CONSOLING FROM CONTENT');
+  if (!iUserProfile) {
+  if (msg.action === 'openUserProfile') {
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = `
+        position: absolute;
+        top: 50%; 
+        left: 50%; 
+        width: 60em;
+        height: 43em;
+        transform: translate(-50%, -50%); 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 17px;
+        z-index: 999999;
+        background-color: white;
+      `;
+    iframe.src = chrome.runtime.getURL('infoModel.html');
+    document.body.appendChild(iframe);
+    iframeExists = true;
+
+    const closeListener = (
+      message: { action: string },
+      sender: any,
+      sendResponse: any
+    ) => {
+      if (message.action === 'closeIframe') {
+        if (iframe && iframe.parentNode) {
+          iframe.parentNode.removeChild(iframe);
+          iframeExists = true;
+          iUserProfile = false;
+        }
+      }
+    };
+    chrome.runtime.onMessage.addListener(closeListener);
+  }
+}
+});
 
 const addButtonToPage = () => {
   const mainDiv = document.querySelector(
@@ -87,6 +130,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.action === 'handleAuthToken') {
+    console.log(message, 'MESSAGE TOKEN::::::');
+
     const { token } = message;
     console.log('Received token in content script:', token);
   }

@@ -10,6 +10,8 @@ module.exports = {
     background: './background.ts',
     react: './index.tsx',
     iframe: './iframe.tsx',
+    infoModel: './infoModel.tsx',
+    tabInfoModel: './tabInfoModel.tsx',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -26,6 +28,16 @@ module.exports = {
       template: './iframe.html',
       filename: 'iframe.html',
       inject: false
+    }),
+    new HtmlWebpackPlugin({
+      template: './infoModel.html',
+      filename: 'infoModel.html',
+      inject: false,
+    }),
+    new HtmlWebpackPlugin({
+      template: './tabInfoModel.html',
+      filename: 'tabInfoModel.html',
+      inject: false,
     }),
     new CopyPlugin({
       patterns: [{
@@ -49,7 +61,11 @@ module.exports = {
             ]
           }
         }
-      }
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
     ]
   },
   resolve: {
