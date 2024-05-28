@@ -12,8 +12,6 @@ const TabUserProfile: React.FC = () => {
   const useRefState = useRef(false);
 
   useEffect(() => {
-    console.log('CONSOLING FROM PROFILE');
-
     generateResponse();
     const messageListener = (message: any) => {
       useRefState.current = true;
