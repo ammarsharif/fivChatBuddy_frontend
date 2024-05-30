@@ -31,7 +31,13 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["index.html", "iframe.html", "infoModel.html", "tabInfoModel.html"],
+      "resources": [
+        "index.html",
+        "iframe.html",
+        "infoModel.html",
+        "tabInfoModel.html",
+        "auth.html"
+      ],
       "matches": ["<all_urls>"]
     }
   ],

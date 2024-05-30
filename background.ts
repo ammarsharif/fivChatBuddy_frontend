@@ -1,8 +1,10 @@
-export async function getAuthToken(): Promise<string | undefined> {
+export async function getAuthToken(
+  interactive = true
+): Promise<string | undefined> {
   return new Promise((resolve) => {
-    chrome?.identity?.getAuthToken(
+    chrome.identity.getAuthToken(
       {
-        interactive: true,
+        interactive,
         scopes: [
           'https://www.googleapis.com/auth/userinfo.email',
           'https://www.googleapis.com/auth/userinfo.profile',

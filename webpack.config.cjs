@@ -12,6 +12,7 @@ module.exports = {
     iframe: './iframe.tsx',
     infoModel: './infoModel.tsx',
     tabInfoModel: './tabInfoModel.tsx',
+    auth: './auth.tsx',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -39,11 +40,45 @@ module.exports = {
       filename: 'tabInfoModel.html',
       inject: false,
     }),
+    new HtmlWebpackPlugin({
+      template: './auth.html',
+      filename: 'auth.html',
+      inject: false,
+    }),
     new CopyPlugin({
       patterns: [{
         from: path.resolve('manifest.json'),
         to: path.resolve('dist')
-      }]
+      },
+      {
+        from: path.resolve('stylesContentScript.css'),
+        to: path.resolve('dist'),
+      },
+      {
+        from: path.resolve('stylesMainModel.css'),
+        to: path.resolve('dist'),
+      },
+      {
+        from: path.resolve('stylesUserProfile.css'),
+        to: path.resolve('dist'),
+      },
+      {
+        from: path.resolve('stylesTabUserProfile.css'),
+        to: path.resolve('dist'),
+      },
+      {
+        from: path.resolve('stylesApp.css'),
+        to: path.resolve('dist'),
+      },
+      {
+        from: path.resolve('stylesAuthModel.css'),
+        to: path.resolve('dist'),
+      },
+      {
+        from: path.resolve('icons'),
+        to: path.resolve('dist/icons'),
+      },
+    ]
     })
   ],
   module: {
