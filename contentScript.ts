@@ -1,73 +1,112 @@
+import './stylesContentScript.css';
 let iframeExists = false;
 let iUserProfile = false;
-chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-  console.log('CONSOLING FROM CONTENT');
-  if (!iUserProfile) {
-  if (msg.action === 'openUserProfile') {
-    const iframe = document.createElement('iframe');
-    iframe.style.cssText = `
-        position: absolute;
-        top: 50%; 
-        left: 50%; 
-        width: 60em;
-        height: 43em;
-        transform: translate(-50%, -50%); 
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border: none;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
-        border-radius: 17px;
-        z-index: 999999;
-        background-color: white;
-      `;
-    iframe.src = chrome.runtime.getURL('infoModel.html');
-    document.body.appendChild(iframe);
-    iframeExists = true;
 
-    const closeListener = (
-      message: { action: string },
-      sender: any,
-      sendResponse: any
-    ) => {
-      if (message.action === 'closeIframe') {
-        if (iframe && iframe.parentNode) {
-          iframe.parentNode.removeChild(iframe);
-          iframeExists = true;
-          iUserProfile = false;
-        }
+const checkAuthentication = async (): Promise<any> => {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ action: 'checkAuthentication' });
+    chrome.runtime.onMessage.addListener((message) => {
+      if (message.action === 'authenticationStatus') {
+        resolve(message);
       }
-    };
-    chrome.runtime.onMessage.addListener(closeListener);
+    });
+  });
+};
+
+const showLoginButton = () => {
+  const iframe = document.createElement('iframe');
+  iframe.classList.add('custom-iframe');
+  iframe.src = chrome.runtime.getURL('auth.html');
+  document.body.appendChild(iframe);
+  setTimeout(() => {
+    iframe.classList.add('active');
+  }, 10);
+  iframeExists = true;
+
+  chrome.runtime.onMessage.addListener((message) => {
+    if (message.action === 'closeIframe') {
+      if (iframe && iframe.parentNode) {
+        iframe.classList.remove('active');
+        setTimeout(() => {
+          if (iframe && iframe.parentNode) {
+            iframe.parentNode.removeChild(iframe);
+            iframeExists = false;
+          }
+        }, 300);
+      }
+    }
+  });
+};
+
+chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+  if (!iUserProfile) {
+    if (msg.action === 'openUserProfile') {
+      const iframe = document.createElement('iframe');
+      iframe.classList.add('user-profile-iframe');
+      iframe.src = chrome.runtime.getURL('infoModel.html');
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        iframe.classList.add('active');
+      }, 10);
+      iUserProfile = true;
+      const closeListener = (message: { action: string }) => {
+        if (message.action === 'closeIframe') {
+          if (iframe && iframe.parentNode) {
+            iframe.classList.remove('active');
+            setTimeout(() => {
+              if (iframe && iframe.parentNode) {
+                iframe.parentNode.removeChild(iframe);
+                iUserProfile = false;
+              }
+            }, 300);
+            iframeExists = false;
+            iUserProfile = false;
+          }
+        }
+      };
+      chrome.runtime.onMessage.addListener(closeListener);
+    }
   }
-}
 });
 
 const addButtonToPage = () => {
   const mainDiv = document.querySelector(
     '.message-action-bar .flex.flex-row.flex-items-center'
   );
-  if (mainDiv) {
-    if (!document.getElementById('myInjectButton')) {
-      const button = document.createElement('img');
-      button.src =
-        'https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png';
-      button.alt = 'icon';
-      button.id = 'myInjectButton';
-      button.style.width = '43px';
-      button.style.height = '24px';
-      button.style.borderRadius = '50%';
-      button.style.marginRight = '-30px';
-      button.style.position = 'absolute';
-      button.style.right = '6.5em';
-      button.style.cursor = 'pointer';
-      button.addEventListener('click', function () {
-        iframeExists = false;
-        chrome.runtime.sendMessage({ action: 'authenticateWithGoogle' });
-        chrome.runtime.sendMessage({ action: 'executeOnClicker' });
+
+  if (mainDiv && !document.getElementById('myInjectButton')) {
+    const button = document.createElement('img');
+    button.src =
+      'https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png';
+    button.alt = 'icon';
+    button.id = 'myInjectButton';
+    button.style.width = '43px';
+    button.style.height = '24px';
+    button.style.borderRadius = '50%';
+    button.style.marginRight = '-30px';
+    button.style.position = 'absolute';
+    button.style.right = '6.5em';
+    button.style.cursor = 'pointer';
+    button.addEventListener('click', function () {
+      checkAuthentication().then((response) => {
+        if (response?.authenticated) {
+          chrome.runtime.sendMessage({ action: 'clickReplyButton' });
+          if (iframeExists) {
+            chrome.runtime.sendMessage({ action: 'closeIframe' });
+          } else {
+            setTimeout(() => {
+              chrome.runtime.sendMessage({ action: 'receiveEmailText' });
+            }, 1000);
+          }
+        } else {
+          if (iframeExists) {
+            chrome.runtime.sendMessage({ action: 'closeIframe' });
+          }
+          showLoginButton();
+        }
       });
-      mainDiv.appendChild(button);
-    }
+    });
+    mainDiv.appendChild(button);
   }
 };
 
@@ -86,52 +125,37 @@ document.addEventListener('click', (event) => {
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.action === 'clickReplyButton') {
-    const replyButton = document.querySelector(
-      '.ams.bkH'
-    ) as HTMLElement | null;
-    if (replyButton) {
-      replyButton.click();
-    } else {
-      if (!iframeExists) {
-        const iframe = document.createElement('iframe');
-        iframe.style.cssText = `
-            position: fixed;
-            top: 24em; 
-            right: 3em; 
-            width: 373px; 
-            height: 438px;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
-            border-radius: 17px;
-            z-index: 999999;
-            background-color: white;
-          `;
-        iframe.src = chrome.runtime.getURL('iframe.html');
-        document.body.appendChild(iframe);
-        iframeExists = true;
+    if (!iframeExists && !iUserProfile) {
+      const iframe = document.createElement('iframe');
+      iframe.classList.add('custom-iframe');
+      iframe.src = chrome.runtime.getURL('iframe.html');
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        iframe.classList.add('active');
+      }, 10);
+      iframeExists = true;
 
-        const closeListener = (
-          message: { action: string },
-          sender: any,
-          sendResponse: any
-        ) => {
-          if (message.action === 'closeIframe') {
-            if (iframe && iframe.parentNode) {
-              iframe.parentNode.removeChild(iframe);
-            }
+      const closeListener = (message: { action: string }) => {
+        if (message.action === 'closeIframe') {
+          if (iframe && iframe.parentNode) {
+            iframe.classList.remove('active');
+            setTimeout(() => {
+              if (iframe && iframe.parentNode) {
+                iframe.parentNode.removeChild(iframe);
+                iframeExists = false;
+              }
+            }, 300);
+            iframeExists = false;
           }
-        };
-        chrome.runtime.onMessage.addListener(closeListener);
-      }
+        }
+      };
+      chrome.runtime.onMessage.addListener(closeListener);
     }
   }
 });
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.action === 'handleAuthToken') {
-    console.log(message, 'MESSAGE TOKEN::::::');
-
     const { token } = message;
     console.log('Received token in content script:', token);
   }
@@ -161,3 +185,14 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     const emailText = message.emailText;
   }
 });
+
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.type === 'childList') {
+      addButtonToPage();
+    }
+  });
+});
+
+const config = { childList: true, subtree: true };
+observer.observe(document.body, config);

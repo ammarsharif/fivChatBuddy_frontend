@@ -65,7 +65,7 @@ const AuthModel: React.FC = () => {
         <div className="header">
           <div className="logo-header">
             <img
-              src="https://media.licdn.com/dms/image/D4D0BAQGd8H31h5niqg/company-logo_200_200/0/1712309492132/evolvebay_logo?e=2147483647&v=beta&t=tSYT6EkXf7aP709xw1DbPc41AbobGq6qtM5PC1El__I"
+              src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
               width="32px"
               height="32px"
               style={{ borderRadius: '50%' }}
@@ -77,7 +77,7 @@ const AuthModel: React.FC = () => {
               className="close-button"
               onClick={handleCloseButton}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#ffecec';
+                e.currentTarget.style.backgroundColor = '#1dbf73';
                 e.currentTarget.style.borderRadius = '50%';
               }}
               onMouseLeave={(e) => {

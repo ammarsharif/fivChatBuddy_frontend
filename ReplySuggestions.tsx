@@ -145,7 +145,10 @@ const ReplySuggestions: React.FC = () => {
 
   useEffect(() => {
     const messageListener = (message: any) => {
-      if (message.action === 'receiveEmailText' && !useRefState.current) {
+      if (
+        message.action == 'receiveEmailText' ||
+        message.action == 'generateEmailText'
+      ) {
         const emailText = `Act as a content creator consultant to assist me that I am ${selectedRole} and I have to deal with the ${
           selectedRole === 'seller' ? 'buyer' : 'seller'
         } in crafting reply messages. Here is the messages...\n ${

@@ -23,36 +23,6 @@ export async function getAuthToken(
   });
 }
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  chrome.tabs.query(
-    { active: true, currentWindow: true },
-    async function (tabs) {
-      try {
-        const [tab] = await chrome.tabs.query({
-          active: true,
-          currentWindow: true,
-        });
-
-        if (tab && tab.id) {
-          const result = await chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            func: textFinder,
-          });
-          if (result && result[0] && result[0].result) {
-            const emailText = result[0].result;
-            console.log('Response is generating Please wait....');
-            clickHandler(emailText);
-          }
-        } else {
-          console.log('No active tab found');
-        }
-      } catch (error) {
-        console.log('Error querying tabs:' + error);
-      }
-    }
-  );
-});
-
 const textFinder = (): string | null => {
   const messageContents = document.querySelectorAll('.message-content');
   const resultArray: string[] = [];
@@ -89,29 +59,26 @@ const textFinder = (): string | null => {
   }
 
   const lastTenMessages = resultArray.slice(-10);
-
   const combinedText = lastTenMessages.join('\n');
 
   return combinedText;
 };
 
 const clickHandler = async (emailText: any) => {
-  const tabs = await chrome.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   const activeTab = tabs[0];
   if (activeTab && activeTab.id) {
     chrome.tabs.sendMessage(activeTab.id, { action: 'clickReplyButton' });
-setTimeout(() => {
-  if (activeTab && activeTab.id)
-  chrome.tabs.sendMessage(activeTab.id, {
-    action: 'receiveEmailText',
-    response: emailText,
-  });
-}, 300);
+    setTimeout(() => {
+      if (activeTab && activeTab.id) {
+        chrome.tabs.sendMessage(activeTab.id, {
+          action: 'receiveEmailText',
+          response: emailText,
+        });
+      }
+    }, 300);
   } else {
-    console.log('No active tab found');
+    console.error('No active tab found');
   }
 };
 
@@ -120,67 +87,84 @@ chrome.runtime.onMessage.addListener(async function (
   sender,
   sendResponse
 ) {
-  if (message.action === 'generateEmailText') {
-    const { selectedTone, selectedRole } = message;
+  try {
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
     const activeTab = tabs[0];
-    if (activeTab && activeTab.id) {
-      chrome.tabs.sendMessage(activeTab.id, {
-        action: 'generateEmailText',
-        selectedTone: selectedTone,
-        selectedRole: selectedRole,
-      });
-    }
-  }
-});
 
-chrome.runtime.onMessage.addListener(async function (
-  message,
-  sender,
-  sendResponse
-) {
-  if (message.action === 'suggestedText') {
-    const suggestedText = message.suggestion;
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    const activeTab = tabs[0];
-    if (activeTab && activeTab.id) {
-      chrome.tabs.sendMessage(activeTab.id, {
-        action: 'suggestedText',
-        suggestedText: suggestedText,
-      });
+    if (!activeTab || !activeTab.id) {
+      console.error('No active tab found');
+      return;
     }
-  }
-});
 
-chrome.runtime.onMessage.addListener(async function (
-  message,
-  sender,
-  sendResponse
-) {
-  if (message.action === 'closeIframe') {
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    const activeTab = tabs[0];
-    if (activeTab && activeTab.id) {
-      chrome.tabs.sendMessage(activeTab.id, { action: 'closeIframe' });
-    }
-  }
-});
-
-chrome.runtime.onMessage.addListener(async function (
-  message,
-  sender,
-  sendResponse
-) {
-  if (message.action === 'authenticateWithGoogle') {
-    const token = await getAuthToken();
-    if (!chrome.runtime.lastError && token) {
-      if (sender?.tab?.id)
-        chrome.tabs.sendMessage(sender.tab.id, {
-          action: 'handleAuthToken',
-          token: token,
+    switch (message.action) {
+      case 'generateEmailText':
+        const { selectedTone, selectedRole } = message;
+        chrome.tabs.sendMessage(activeTab.id, {
+          action: 'generateEmailText',
+          selectedTone: selectedTone,
+          selectedRole: selectedRole,
         });
-    } else {
-      console.error('Error obtaining token:', chrome.runtime.lastError);
+        break;
+      case 'checkAuthentication':
+        (async () => {
+          const authToken = await getAuthToken(false);
+          if (authToken) {
+            if (sender.tab?.id)
+              chrome.tabs.sendMessage(sender.tab.id, {
+                action: 'authenticationStatus',
+                authenticated: true,
+                token: authToken,
+              });
+          } else {
+            if (sender.tab?.id)
+              chrome.tabs.sendMessage(sender.tab.id, {
+                action: 'authenticationStatus',
+                authenticated: false,
+              });
+          }
+        })();
+        break;
+
+      case 'authenticateWithGoogle':
+        const token = await getAuthToken();
+        if (!chrome.runtime.lastError && token) {
+          if (sender?.tab?.id) {
+            chrome.tabs.sendMessage(sender.tab.id, {
+              action: 'handleAuthToken',
+              token: token,
+            });
+          }
+        } else {
+          console.error('Error obtaining token:', chrome.runtime.lastError);
+        }
+        break;
+
+      case 'executeOnClicker':
+        const result = await chrome.scripting.executeScript({
+          target: { tabId: activeTab.id },
+          func: textFinder,
+        });
+        if (result && result[0] && result[0].result) {
+          const emailText = result[0].result;
+          console.log('Response is generating. Please wait....');
+          clickHandler(emailText);
+        }
+        break;
+
+      case 'generateEmailText':
+      case 'clickReplyButton':
+      case 'suggestedText':
+      case 'closeIframe':
+        const tabs = await chrome.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+        if (activeTab && activeTab.id) {
+          chrome.tabs.sendMessage(activeTab.id, message);
+        }
+        break;
     }
+  } catch (error) {
+    console.error('Error handling message:', error);
   }
 });
