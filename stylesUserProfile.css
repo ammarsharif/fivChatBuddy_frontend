@@ -66,6 +66,7 @@
   border: none;
   cursor: pointer;
 }
+
 .head-divider {
   width: 59em;
   border: none;
@@ -123,21 +124,12 @@
   margin: 10px 0;
   color: #333;
 }
+
 .no-profile {
   font-size: 24px;
   font-weight: bold;
   margin: 20px 0;
   color: #333;
-}
-
-.delete-button {
-  padding: 10px 30px;
-  background-color: #f85050;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  outline: none;
 }
 
 .sidebar {
