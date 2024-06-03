@@ -142,17 +142,12 @@ function App() {
               <p className="heading">Fiverr</p>
             </div>
             {authenticated ? (
-              <>
-                <img
-                  src={responseText || 'default-photo-url'}
-                  alt="Profile"
-                  className="user-pic"
-                  onClick={onProfileHandler}
-                />
-                <button onClick={deleteTokenHandler} className="delete-button">
-                  Delete Token
-                </button>
-              </>
+              <img
+                src={responseText || 'default-photo-url'}
+                alt="Profile"
+                className="user-pic"
+                onClick={onProfileHandler}
+              />
             ) : (
               <button onClick={onGoogleButtonHandler} className="google-button">
                 <img
@@ -160,11 +155,44 @@ function App() {
                   alt="Google Logo"
                   className="google-logo"
                 />
-                Login Google
+                Login
               </button>
             )}
           </div>
           <hr className="head-divider" />
+          {authenticated ? (
+            <div>
+              <div className="table-container">
+                <div className="table-row">
+                  <button className="table-cell">
+                    <span role="img" aria-label="help" className="icon">
+                      ❓
+                    </span>
+                    Need Help
+                  </button>
+                </div>
+                <div className="table-row">
+                  <button className="table-cell">
+                    <span role="img" aria-label="feedback" className="icon">
+                      💬
+                    </span>
+                    Provide Feedback
+                  </button>
+                </div>
+                <div className="table-row">
+                  <button className="table-cell">
+                    <span role="img" aria-label="community" className="icon">
+                      👥
+                    </span>
+                    Community
+                  </button>
+                </div>
+              </div>
+              <button onClick={deleteTokenHandler} className="logout-button">
+                Logout
+              </button>
+            </div>
+          ) : null}
         </>
       )}
     </div>
@@ -173,13 +201,13 @@ function App() {
 
 const spinnerStyle = `
 .spinner {
-  border: 3px solid rgba(255, 0, 0, 0.3);
+  border: 3px solid ##bfe29d;
   border-radius: 50%;
-  border-top: 3px solid #87150b;
-  width: 2em;
-  height: 2em;
+  border-top: 3px solid #1dbf73;
+  width: 3em;
+  height: 3em;
   animation: spin 1s linear infinite;
-  margin: 4em auto;
+  margin: 4.5em auto;
 }
 
 @keyframes spin {

@@ -66,11 +66,11 @@ const AuthModel: React.FC = () => {
           <div className="logo-header">
             <img
               src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
-              width="32px"
-              height="32px"
+              width="45px"
+              height="25px"
               style={{ borderRadius: '50%' }}
             />
-            <p className="heading">User Profile</p>
+            <p className="heading">Sign In</p>
           </div>
           <div className="tone-header">
             <button
@@ -96,6 +96,7 @@ const AuthModel: React.FC = () => {
               <LoadingChatBubble size="small" />
               <LoadingChatBubble size="large" />
               <LoadingChatBubble size="small" />
+              <LoadingChatBubble size="small" />
             </div>
           ) : (
             <>
@@ -108,8 +109,14 @@ const AuthModel: React.FC = () => {
                 />
                 Sign in with Google
               </button>
-              <p>
-                By clicking “Connect with Google”you agree to the Terms of Use
+              <p style={{ margin: '5px' }}>
+                By clicking “Connect with Google”you agree
+              </p>
+              <p style={{ margin: '0px' }}>
+                to the{' '}
+                <a href="/terms-of-use" className="link-underline">
+                  Terms of Use
+                </a>
               </p>
             </>
           )}
