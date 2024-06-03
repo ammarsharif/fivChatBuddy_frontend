@@ -2,139 +2,9 @@ import React, { ChangeEvent, useEffect, useState, useRef } from 'react';
 import { RxCross1 } from 'react-icons/rx';
 import { FaRegPaste } from 'react-icons/fa6';
 import { TbReload } from 'react-icons/tb';
+import './stylesMainModel.css';
 
 const ReplySuggestions: React.FC = () => {
-  const containerStyle = {
-    backgroundColor: '#fffff',
-    padding: '20px',
-    width: '350px',
-    margin: '-12px',
-    fontFamily: 'Arial, sans-serif',
-  };
-
-  const headingStyle = {
-    color: '#333',
-    fontSize: '17px',
-    fontWeight: '600',
-    margin: '10px 5px 10px -2px',
-  };
-
-  const header = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '2px',
-  };
-
-  const logoHeader = {
-    display: 'flex',
-    alignItems: 'center',
-  };
-
-  const toneHeader = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: '10px',
-  };
-
-  const headDivider = {
-    width: '97%',
-    border: 'none',
-    borderBottom: '1px solid #ccc',
-    margin: '0px 0px 15px 0px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-  };
-
-  const replyDivider = {
-    width: '100%',
-    border: 'none',
-    borderBottom: '1px solid #ccc',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-  };
-
-  const selectContainerStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: '10px',
-    flex: '1',
-  };
-
-  const selectStyle = {
-    width: '100%',
-    padding: '8px 11px 8px 11px',
-    borderRadius: '6px',
-    border: 'none',
-    margin: '0px',
-    backgroundColor: '#F1F1F1',
-    fontSize: '14px',
-    outline: 'none',
-    gap: '38px,',
-  };
-
-  const responseItemStyle = {
-    padding: '2px 8px 0px',
-    margin: '5px 0px',
-    backgroundColor: '#fffff',
-    borderRadius: '4px',
-    lineHeight: '1.5',
-    fontFamily: 'Arial, sans-serif',
-    color: '#4d4d4d',
-    fontSize: '14px',
-    transition: 'background-color 0.3s ease',
-  };
-  const noResponseStyle = {
-    padding: '0px 8px 0px',
-    margin: '10px 0px',
-    backgroundColor: '#fffff',
-    borderRadius: '4px',
-    lineHeight: '1.5',
-    fontFamily: 'Arial, sans-serif',
-    color: '#4d4d4d',
-    fontSize: '16px',
-    transition: 'background-color 0.3s ease',
-  };
-
-  const closeButton = {
-    marginTop: '0px',
-    width: '25px',
-    height: '25px',
-    fontSize: '14px',
-    color: 'black',
-    backgroundColor: 'transparent',
-    borderRadius: '50%',
-    border: 'none',
-    cursor: 'pointer',
-    paddingTop: '4px',
-  };
-
-  const reloadButtonStyle = {
-    position: 'absolute',
-    right: '1.3em',
-    backgroundColor: '#1dbf73',
-    border: 'none',
-    borderRadius: '50%',
-    width: '25px',
-    height: '25px',
-    color: 'white',
-    fontSize: '20px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  const copyIconStyle = {
-    cursor: 'pointer',
-    marginLeft: '10px',
-    marginBottom: '4px',
-    fontSize: '16px',
-    width: '20px',
-    height: '20px',
-    border: 'none',
-    borderRadius: '50%',
-    padding: '5px 4px 5px 8px',
-  };
-
   const [responseText, setResponseText] = useState<{ text: string }[] | null>(
     null
   );
@@ -146,8 +16,8 @@ const ReplySuggestions: React.FC = () => {
   useEffect(() => {
     const messageListener = (message: any) => {
       if (
-        message.action == 'receiveEmailText' ||
-        message.action == 'generateEmailText'
+        message.action === 'receiveEmailText' ||
+        message.action === 'generateEmailText'
       ) {
         const emailText = `Act as a content creator consultant to assist me that I am ${selectedRole} and I have to deal with the ${
           selectedRole === 'seller' ? 'buyer' : 'seller'
@@ -176,6 +46,7 @@ const ReplySuggestions: React.FC = () => {
     useRefState.current = false;
     chrome.runtime.sendMessage({ action: 'generateEmailText' });
   };
+
   const handleRoleChange = async (event: ChangeEvent<HTMLSelectElement>) => {
     const role = event.target.value;
     setSelectedRole(role);
@@ -207,12 +78,7 @@ const ReplySuggestions: React.FC = () => {
                 'Bearer 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',
             },
             body: JSON.stringify({
-              messages: [
-                {
-                  role: 'user',
-                  content: modifiedEmailText,
-                },
-              ],
+              messages: [{ role: 'user', content: modifiedEmailText }],
               model: 'openai/gpt-3.5-turbo',
               max_tokens: 200,
             }),
@@ -221,7 +87,6 @@ const ReplySuggestions: React.FC = () => {
         const dataJson = await response.json();
         const choice = dataJson.choices[0];
         const responseContent = choice?.message.content;
-
         return responseContent ? { text: responseContent } : null;
       };
       const responses = await Promise.all([
@@ -235,7 +100,6 @@ const ReplySuggestions: React.FC = () => {
 
       if (validResponses.length === 3) {
         console.log(validResponses, 'VALID RESPONSE:::::');
-
         setResponseText(validResponses);
       } else {
         return null;
@@ -264,27 +128,22 @@ const ReplySuggestions: React.FC = () => {
   };
 
   return (
-    <div
-      style={{
-        ...containerStyle,
-        position: 'relative',
-      }}
-    >
+    <div className="container">
       <div>
-        <div style={header}>
-          <div style={logoHeader}>
+        <div className="header">
+          <div className="logoHeader">
             <img
               src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
-              height={'24px'}
-              width={'42px'}
+              height="24px"
+              width="42px"
               style={{ borderRadius: '50%' }}
+              alt="Fiverr Logo"
             ></img>
-            <p style={headingStyle}>A.I Suggested Replies</p>
+            <p className="heading">A.I Suggested Replies</p>
           </div>
           <button
-            className="close_button"
-            style={closeButton}
-            onClick={() => handleCloseButton()}
+            className="closeButton"
+            onClick={handleCloseButton}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = '#1dbf73';
               e.currentTarget.style.borderRadius = '50%';
@@ -296,12 +155,12 @@ const ReplySuggestions: React.FC = () => {
             <RxCross1 />
           </button>
         </div>
-        <hr style={headDivider} />
-        <div style={toneHeader}>
-          <div style={selectContainerStyle}>
+        <hr className="headDivider" />
+        <div className="toneHeader">
+          <div className="selectContainer">
             <select
               id="toneSelect"
-              style={{ ...selectStyle }}
+              className="select"
               onChange={handleToneChange}
             >
               <option value="formal">Formal</option>
@@ -316,10 +175,10 @@ const ReplySuggestions: React.FC = () => {
               <option value="grateful">Grateful</option>
             </select>
           </div>
-          <div style={selectContainerStyle}>
+          <div className="selectContainer">
             <select
               id="roleSelect"
-              style={{ ...selectStyle }}
+              className="select"
               onChange={handleRoleChange}
             >
               <option value="seller">Seller</option>
@@ -342,16 +201,14 @@ const ReplySuggestions: React.FC = () => {
                 responseText.map((response, index) => (
                   <div key={index}>
                     <p
-                      style={{
-                        ...responseItemStyle,
-                        transition: 'background-color 0.3s ease',
-                      }}
+                      className="responseItem"
                       onClick={() => handleResponseClick(response.text)}
                     >
                       {response.text}
                       {!loading ? (
                         <span
-                          style={{ ...copyIconStyle, float: 'right' }}
+                          className="copyIcon"
+                          style={{ float: 'right' }}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleResponseClick(response.text);
@@ -368,28 +225,19 @@ const ReplySuggestions: React.FC = () => {
                       ) : null}
                     </p>
                     {index < responseText.length - 1 && (
-                      <hr style={replyDivider} />
+                      <hr className="replyDivider" />
                     )}
                   </div>
                 ))
               ) : (
-                <p
-                  style={{
-                    ...noResponseStyle,
-                  }}
-                >
-                  No response available
-                </p>
+                <p className="noResponse">No response available</p>
               )}
             </div>
           )}
           {!loading ? (
             <button
-              style={{
-                ...reloadButtonStyle,
-                position: 'absolute',
-                bottom: responseText ? '-1em' : '1.6em',
-              }}
+              className="reloadButton"
+              style={{ bottom: responseText ? '-1em' : '1.6em' }}
               onClick={handleReloadClick}
             >
               <TbReload />
@@ -400,30 +248,5 @@ const ReplySuggestions: React.FC = () => {
     </div>
   );
 };
-
-const spinnerStyle = `
-.spinner {
-  border: 3px solid ##bfe29d;
-  border-radius: 50%;
-  border-top: 3px solid #1dbf73;
-  width: 7em;
-  height: 7em;
-  animation: spin 1s linear infinite;
-  margin: 9.5em auto;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-`;
-
-const styleElement = document.createElement('style');
-styleElement.innerHTML = spinnerStyle;
-document.head.appendChild(styleElement);
 
 export default ReplySuggestions;
