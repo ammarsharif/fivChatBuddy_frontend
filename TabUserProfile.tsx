@@ -3,6 +3,7 @@ import './stylesUserProfile.css';
 import { RiContactsLine } from 'react-icons/ri';
 import { CiStar } from 'react-icons/ci';
 import { getAuthToken } from './background';
+import SubscriptionModel from './SubscriptionModel';
 interface ProfileInfo {
   names?: { displayName: string }[];
   emailAddresses?: { value: string }[];
@@ -122,7 +123,7 @@ const TabUserProfile: React.FC = () => {
     if (activeModule === 'Package') {
       return (
         <div className="subscribe">
-          Subscriptions
+          <SubscriptionModel/>
         </div>
       );
     }

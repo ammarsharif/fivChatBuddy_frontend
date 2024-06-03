@@ -13,22 +13,23 @@ module.exports = {
     infoModel: './infoModel.tsx',
     tabInfoModel: './tabInfoModel.tsx',
     auth: './auth.tsx',
+    subscription: './subscription.tsx',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
-    clean: true
+    clean: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
       filename: 'index.html',
-      inject: false
+      inject: false,
     }),
     new HtmlWebpackPlugin({
       template: './iframe.html',
       filename: 'iframe.html',
-      inject: false
+      inject: false,
     }),
     new HtmlWebpackPlugin({
       template: './infoModel.html',
@@ -45,41 +46,51 @@ module.exports = {
       filename: 'auth.html',
       inject: false,
     }),
+    new HtmlWebpackPlugin({
+      template: './subscription.html',
+      filename: 'subscription.html',
+      inject: false,
+    }),
     new CopyPlugin({
-      patterns: [{
-        from: path.resolve('manifest.json'),
-        to: path.resolve('dist')
-      },
-      {
-        from: path.resolve('stylesContentScript.css'),
-        to: path.resolve('dist'),
-      },
-      {
-        from: path.resolve('stylesMainModel.css'),
-        to: path.resolve('dist'),
-      },
-      {
-        from: path.resolve('stylesUserProfile.css'),
-        to: path.resolve('dist'),
-      },
-      {
-        from: path.resolve('stylesTabUserProfile.css'),
-        to: path.resolve('dist'),
-      },
-      {
-        from: path.resolve('stylesApp.css'),
-        to: path.resolve('dist'),
-      },
-      {
-        from: path.resolve('stylesAuthModel.css'),
-        to: path.resolve('dist'),
-      },
-      {
-        from: path.resolve('icons'),
-        to: path.resolve('dist/icons'),
-      },
-    ]
-    })
+      patterns: [
+        {
+          from: path.resolve('manifest.json'),
+          to: path.resolve('dist'),
+        },
+        {
+          from: path.resolve('stylesContentScript.css'),
+          to: path.resolve('dist'),
+        },
+        {
+          from: path.resolve('stylesMainModel.css'),
+          to: path.resolve('dist'),
+        },
+        {
+          from: path.resolve('stylesUserProfile.css'),
+          to: path.resolve('dist'),
+        },
+        {
+          from: path.resolve('stylesTabUserProfile.css'),
+          to: path.resolve('dist'),
+        },
+        {
+          from: path.resolve('stylesApp.css'),
+          to: path.resolve('dist'),
+        },
+        {
+          from: path.resolve('stylesAuthModel.css'),
+          to: path.resolve('dist'),
+        },
+        {
+          from: path.resolve('stylesSubscriptionModel.css'),
+          to: path.resolve('dist'),
+        },
+        {
+          from: path.resolve('icons'),
+          to: path.resolve('dist/icons'),
+        },
+      ],
+    }),
   ],
   module: {
     rules: [
@@ -91,19 +102,19 @@ module.exports = {
           options: {
             presets: [
               '@babel/preset-env',
-              ['@babel/preset-react', {'runtime': 'automatic'}],
-              '@babel/preset-typescript'
-            ]
-          }
-        }
+              ['@babel/preset-react', { runtime: 'automatic' }],
+              '@babel/preset-typescript',
+            ],
+          },
+        },
       },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
-    ]
+    ],
   },
   resolve: {
-    extensions: ['.ts', '.tsx']
-  }
+    extensions: ['.ts', '.tsx'],
+  },
 };

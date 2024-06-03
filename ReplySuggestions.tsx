@@ -140,7 +140,7 @@ const ReplySuggestions: React.FC = () => {
   );
   const [selectedTone, setSelectedTone] = useState<string>('formal');
   const [selectedRole, setSelectedRole] = useState<string>('seller');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const useRefState = useRef(false);
 
   useEffect(() => {
