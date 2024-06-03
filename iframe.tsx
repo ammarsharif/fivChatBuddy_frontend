@@ -1,5 +1,5 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import ReplySuggestions from './ReplySuggestions'
+import MainModel from './MainModel'
 const root = createRoot(document.getElementById('iframe') as HTMLElement);
-root.render(<ReplySuggestions/>);
+root.render(<MainModel/>);

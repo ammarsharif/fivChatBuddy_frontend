@@ -4,7 +4,7 @@ import { FaRegPaste } from 'react-icons/fa6';
 import { TbReload } from 'react-icons/tb';
 import './stylesMainModel.css';
 
-const ReplySuggestions: React.FC = () => {
+const MainModel: React.FC = () => {
   const [responseText, setResponseText] = useState<{ text: string }[] | null>(
     null
   );
@@ -249,4 +249,4 @@ const ReplySuggestions: React.FC = () => {
   );
 };
 
-export default ReplySuggestions;
+export default MainModel;
