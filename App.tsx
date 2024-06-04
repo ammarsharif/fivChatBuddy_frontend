@@ -3,14 +3,14 @@ import { getAuthToken } from './background';
 import { RiQuestionMark } from 'react-icons/ri';
 import { MdOutlineFeedback } from 'react-icons/md';
 import './stylesApp.css';
-import FeedbackModel from './FeedbackModel'; // Import FeedbackModel
+import FeedbackModel from './FeedbackModel';
 import HelpModel from './HelpModel';
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [responseText, setResponseText] = useState(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [activeComponent, setActiveComponent] = useState<string | null>(null);
+  const [activeModule, setActiveModule] = useState<string | null>(null);
   const useRefState = useRef(false);
 
   useEffect(() => {
@@ -129,9 +129,82 @@ function App() {
     }
   };
 
-  const handleComponentToggle = (component: string) => {
-    setActiveComponent((prevComponent) =>
-      prevComponent === component ? null : component
+  const renderActiveModule = () => {
+    switch (activeModule) {
+      case 'Help':
+        return <HelpModel onClose={() => setActiveModule(null)} />;
+      case 'Feedback':
+        return <FeedbackModel onClose={() => setActiveModule(null)} />;
+      default:
+        return renderMainPopup();
+    }
+  };
+
+  const renderMainPopup = () => {
+    return (
+      <>
+        <div className="header">
+          <div className="logo-header">
+            <img
+              src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
+              width={'43px'}
+              height={'24px'}
+              style={{ borderRadius: '50%' }}
+              alt="EvolveBay Logo"
+            />
+            <p className="heading">Fiverr</p>
+          </div>
+          {authenticated ? (
+            <img
+              src={responseText || 'default-photo-url'}
+              alt="Profile"
+              className="user-pic"
+              onClick={onProfileHandler}
+            />
+          ) : (
+            <button onClick={onGoogleButtonHandler} className="google-button">
+              <img
+                src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-webinar-optimizing-for-success-google-business-webinar-13.png"
+                alt="Google Logo"
+                className="google-logo"
+              />
+              Login
+            </button>
+          )}
+        </div>
+        <hr className="head-divider" />
+        {authenticated ? (
+          <div>
+            <div className="table-container">
+              <div className="table-row">
+                <button
+                  className="table-cell"
+                  onClick={() => setActiveModule('Help')}
+                >
+                  <span role="img" aria-label="help" className="icon">
+                  <RiQuestionMark />
+                  </span>
+                  Need Help
+                </button>
+              </div>
+              <div className="table-row">
+                <button
+                  className="table-cell"
+                  onClick={() => setActiveModule('Feedback')}
+                >
+                  <span role="img" aria-label="feedback" className="icon">
+                  <MdOutlineFeedback />
+                  </span>
+                  Provide Feedback
+                </button>
+              </div>
+            </div>
+            <button onClick={deleteTokenHandler} className="logout-button">
+              Logout
+            </button>
+          </div>
+        ) : null}
+      </>
     );
   };
 
@@ -140,77 +213,7 @@ function App() {
       {loading ? (
         <div className="spinner"></div>
       ) : (
-        <>
-          <div className="header">
-            <div className="logo-header">
-              <img
-                src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
-                width={'43px'}
-                height={'24px'}
-                style={{ borderRadius: '50%' }}
-                alt="EvolveBay Logo"
-              />
-              <p className="heading">Fiverr</p>
-            </div>
-            {authenticated ? (
-              <img
-                src={responseText || 'default-photo-url'}
-                alt="Profile"
-                className="user-pic"
-                onClick={onProfileHandler}
-              />
-            ) : (
-              <button onClick={onGoogleButtonHandler} className="google-button">
-                <img
-                  src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-webinar-optimizing-for-success-google-business-webinar-13.png"
-                  alt="Google Logo"
-                  className="google-logo"
-                />
-                Login
-              </button>
-            )}
-          </div>
-          <hr className="head-divider" />
-          {authenticated ? (
-            <div>
-              <div className="table-container">
-                <div className="table-row">
-                  <button
-                    className="table-cell"
-                    onClick={() => handleComponentToggle('help')}
-                  >
-                    <span role="img" aria-label="help" className="icon">
-                      <RiQuestionMark />
-                    </span>
-                    Need Help
-                  </button>
-                </div>
-                <div className="table-row">
-                  <button
-                    className="table-cell"
-                    onClick={() => handleComponentToggle('feedback')}
-                  >
-                    <span role="img" aria-label="feedback" className="icon">
-                      <MdOutlineFeedback />
-                    </span>
-                    Provide Feedback
-                  </button>
-                </div>
-              </div>
-              {activeComponent === 'help' && (
-                <HelpModel onClose={() => handleComponentToggle('help')} />
-              )}
-              {activeComponent === 'feedback' && (
-                <FeedbackModel
-                  onClose={() => handleComponentToggle('feedback')}
-                />
-              )}
-              <button onClick={deleteTokenHandler} className="logout-button">
-                Logout
-              </button>
-            </div>
-          ) : null}
-        </>
+        renderActiveModule()
       )}
     </div>
   );
