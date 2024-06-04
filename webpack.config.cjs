@@ -14,6 +14,8 @@ module.exports = {
     tabInfoModel: './tabInfoModel.tsx',
     auth: './auth.tsx',
     subscription: './subscription.tsx',
+    feedback: './feedback.tsx',
+    help: './help.tsx',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -49,6 +51,16 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './subscription.html',
       filename: 'subscription.html',
+      inject: false,
+    }),
+    new HtmlWebpackPlugin({
+      template: './feedback.html',
+      filename: 'feedback.html',
+      inject: false,
+    }),
+    new HtmlWebpackPlugin({
+      template: './help.html',
+      filename: 'help.html',
       inject: false,
     }),
     new CopyPlugin({

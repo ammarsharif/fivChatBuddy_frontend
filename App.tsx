@@ -1,11 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { getAuthToken } from './background';
+import { RiQuestionMark } from 'react-icons/ri';
+import { MdOutlineFeedback } from 'react-icons/md';
 import './stylesApp.css';
+import FeedbackModel from './FeedbackModel'; // Import FeedbackModel
+import HelpModel from './HelpModel';
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [responseText, setResponseText] = useState(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [activeComponent, setActiveComponent] = useState<string | null>(null);
   const useRefState = useRef(false);
 
   useEffect(() => {
@@ -124,6 +129,12 @@ function App() {
     }
   };
 
+  const handleComponentToggle = (component: string) => {
+    setActiveComponent((prevComponent) =>
+      prevComponent === component ? null : component
+    );
+  };
+
   return (
     <div className="container">
       {loading ? (
@@ -164,30 +175,36 @@ function App() {
             <div>
               <div className="table-container">
                 <div className="table-row">
-                  <button className="table-cell">
+                  <button
+                    className="table-cell"
+                    onClick={() => handleComponentToggle('help')}
+                  >
                     <span role="img" aria-label="help" className="icon">
-                      ❓
+                      <RiQuestionMark />
                     </span>
                     Need Help
                   </button>
                 </div>
                 <div className="table-row">
-                  <button className="table-cell">
+                  <button
+                    className="table-cell"
+                    onClick={() => handleComponentToggle('feedback')}
+                  >
                     <span role="img" aria-label="feedback" className="icon">
-                      💬
+                      <MdOutlineFeedback />
                     </span>
                     Provide Feedback
                   </button>
                 </div>
-                <div className="table-row">
-                  <button className="table-cell">
-                    <span role="img" aria-label="community" className="icon">
-                      👥
-                    </span>
-                    Community
-                  </button>
-                </div>
               </div>
+              {activeComponent === 'help' && (
+                <HelpModel onClose={() => handleComponentToggle('help')} />
+              )}
+              {activeComponent === 'feedback' && (
+                <FeedbackModel
+                  onClose={() => handleComponentToggle('feedback')}
+                />
+              )}
               <button onClick={deleteTokenHandler} className="logout-button">
                 Logout
               </button>
@@ -198,30 +215,5 @@ function App() {
     </div>
   );
 }
-
-const spinnerStyle = `
-.spinner {
-  border: 3px solid ##bfe29d;
-  border-radius: 50%;
-  border-top: 3px solid #1dbf73;
-  width: 3em;
-  height: 3em;
-  animation: spin 1s linear infinite;
-  margin: 4.5em auto;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-`;
-
-const styleElement = document.createElement('style');
-styleElement.innerHTML = spinnerStyle;
-document.head.appendChild(styleElement);
 
 export default App;

@@ -37,7 +37,9 @@
         "infoModel.html",
         "tabInfoModel.html",
         "auth.html",
-        "subscription.html"
+        "subscription.html",
+        "feedback.html",
+        "help.html"
       ],
       "matches": ["<all_urls>"]
     }

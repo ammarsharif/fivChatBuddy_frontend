@@ -1,0 +1,19 @@
+.help-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.help-container h2 {
+  margin-top: 0;
+}
+
+.help-container button {
+  margin-top: 20px;
+  background-color: #1dbf73;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
