@@ -101,7 +101,7 @@ const TabUserProfile: React.FC = () => {
         );
 
         if (backendResponse.ok) {
-          deleteTokenHandler();
+          await deleteTokenHandler();
           chrome.runtime.sendMessage({ action: 'closeIframe' });
           console.log('User data deleted from the backend');
           setResponseText(null);
@@ -123,7 +123,7 @@ const TabUserProfile: React.FC = () => {
     if (activeModule === 'Package') {
       return (
         <div className="subscribe">
-          <SubscriptionModel/>
+          <SubscriptionModel />
         </div>
       );
     }
@@ -165,8 +165,8 @@ const TabUserProfile: React.FC = () => {
       <div className="sidebar">
         <div className="logo-header">
           <img
-             src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
-             width="43px"
+            src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
+            width="43px"
             height="25px"
             style={{ borderRadius: '50%' }}
           />

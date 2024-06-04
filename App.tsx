@@ -53,10 +53,18 @@ function App() {
         },
       }
     );
+    const profileInfo = await response.json();
+    await fetch('http://localhost:5000/api/profile', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(profileInfo),
+    });
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    return response.json();
+    return profileInfo;
   };
 
   const onProfileHandler = async () => {
@@ -182,7 +190,7 @@ function App() {
                   onClick={() => setActiveModule('Help')}
                 >
                   <span role="img" aria-label="help" className="icon">
-                  <RiQuestionMark />
+                    <RiQuestionMark />
                   </span>
                   Need Help
                 </button>
@@ -193,7 +201,7 @@ function App() {
                   onClick={() => setActiveModule('Feedback')}
                 >
                   <span role="img" aria-label="feedback" className="icon">
-                  <MdOutlineFeedback />
+                    <MdOutlineFeedback />
                   </span>
                   Provide Feedback
                 </button>
@@ -210,11 +218,7 @@ function App() {
 
   return (
     <div className="container">
-      {loading ? (
-        <div className="spinner"></div>
-      ) : (
-        renderActiveModule()
-      )}
+      {loading ? <div className="spinner"></div> : renderActiveModule()}
     </div>
   );
 }
