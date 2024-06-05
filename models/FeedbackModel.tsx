@@ -1,6 +1,6 @@
 import React from 'react';
 import { IoMdArrowRoundBack } from 'react-icons/io';
-import './stylesFeedbackModel.css';
+import '../styles/stylesFeedbackModel.css';
 
 const FeedbackModel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (

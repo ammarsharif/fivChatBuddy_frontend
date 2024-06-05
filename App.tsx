@@ -2,9 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import { getAuthToken } from './background';
 import { RiQuestionMark } from 'react-icons/ri';
 import { MdOutlineFeedback } from 'react-icons/md';
-import './stylesApp.css';
-import FeedbackModel from './FeedbackModel';
-import HelpModel from './HelpModel';
+import HelpModel from './models/HelpModel';
+import FeedbackModel from './models/FeedbackModel';
+import './styles/stylesApp.css';
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);

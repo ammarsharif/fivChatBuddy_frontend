@@ -1,20 +1,34 @@
 import React, { useEffect, useState, useRef } from 'react';
-import './stylesUserProfile.css';
+import '../styles/stylesUserModel.css';
 import { RiContactsLine } from 'react-icons/ri';
 import { CiStar } from 'react-icons/ci';
-import { getAuthToken } from './background';
 import SubscriptionModel from './SubscriptionModel';
+import { getAuthToken } from '../background';
+
 interface ProfileInfo {
   names?: { displayName: string }[];
   emailAddresses?: { value: string }[];
   photos?: { url: string }[];
 }
 
-const TabUserProfile: React.FC = () => {
+const UserModel: React.FC = () => {
   const [responseText, setResponseText] = useState<ProfileInfo | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeModule, setActiveModule] = useState<string>('Profile');
   const useRefState = useRef(false);
+
+  const LoadingChatBubble = ({ size }) => {
+    const bubbleStyle = {
+      width: size === 'large' ? '85%' : '60%',
+      height: '25px',
+      margin: '10px 0',
+      borderRadius: '10px',
+      backgroundColor: '#f3f3f3',
+      animation: 'pulse 1.5s ease-in-out infinite',
+    };
+
+    return <div style={bubbleStyle}></div>;
+  };
 
   useEffect(() => {
     generateResponse();
@@ -105,9 +119,6 @@ const TabUserProfile: React.FC = () => {
           chrome.runtime.sendMessage({ action: 'closeIframe' });
           console.log('User data deleted from the backend');
           setResponseText(null);
-          setTimeout(() => {
-            setLoading(false);
-          }, 3000);
         } else {
           console.error('Error deleting user data from the backend');
         }
@@ -117,6 +128,11 @@ const TabUserProfile: React.FC = () => {
     } else {
       console.error('No email address available to delete');
     }
+  };
+
+  const handleCloseButton = () => {
+    useRefState.current = false;
+    chrome.runtime.sendMessage({ action: 'closeIframe' });
   };
 
   const renderContent = () => {
@@ -129,7 +145,12 @@ const TabUserProfile: React.FC = () => {
     }
     if (activeModule === 'Profile') {
       return loading ? (
-        <div className="spinner"></div>
+        <div>
+          <LoadingChatBubble size="large" />
+          <LoadingChatBubble size="small" />
+          <LoadingChatBubble size="large" />
+          <LoadingChatBubble size="small" />
+        </div>
       ) : (
         <div style={{ display: 'flex' }}>
           {responseText ? (
@@ -199,6 +220,21 @@ const TabUserProfile: React.FC = () => {
           <div className="profile-header">
             <p className="heading">Profile</p>
           </div>
+          <div className="tone-header">
+            <button
+              className="close-button"
+              onClick={handleCloseButton}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#1dbf73';
+                e.currentTarget.style.borderRadius = '50%';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#ffffff';
+              }}
+            >
+              &#x2715;
+            </button>
+          </div>
         </div>
         <hr className="head-divider" />
         <div className="content-container">{renderContent()}</div>
@@ -207,4 +243,4 @@ const TabUserProfile: React.FC = () => {
   );
 };
 
-export default TabUserProfile;
+export default UserModel;

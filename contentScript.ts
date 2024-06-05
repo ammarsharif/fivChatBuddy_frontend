@@ -1,4 +1,4 @@
-import './stylesContentScript.css';
+import './styles/stylesContentScript.css';
 let iframeExists = false;
 let iUserProfile = false;
 

@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState, useRef } from 'react';
 import { RxCross1 } from 'react-icons/rx';
 import { FaRegPaste } from 'react-icons/fa6';
 import { TbReload } from 'react-icons/tb';
-import './stylesMainModel.css';
+import '../styles/stylesMainModel.css';
 
 const MainModel: React.FC = () => {
   const [responseText, setResponseText] = useState<{ text: string }[] | null>(

@@ -1,6 +1,6 @@
 import React from 'react';
 import { IoMdArrowRoundBack } from 'react-icons/io';
-import './stylesHelpModel.css';
+import '../styles/stylesHelpModel.css';
 
 const HelpModel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
