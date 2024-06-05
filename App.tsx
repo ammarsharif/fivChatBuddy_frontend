@@ -170,14 +170,13 @@ function App() {
               onClick={onProfileHandler}
             />
           ) : (
-            <button onClick={onGoogleButtonHandler} className="google-button">
-              <img
-                src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-webinar-optimizing-for-success-google-business-webinar-13.png"
-                alt="Google Logo"
-                className="google-logo"
-              />
-              Login
-            </button>
+            <img
+              src={
+                'https://qph.cf2.quoracdn.net/main-qimg-f32f85d21d59a5540948c3bfbce52e68'
+              }
+              alt="Profile"
+              className="user-pic"
+            />
           )}
         </div>
         <hr className="head-divider" />
@@ -211,7 +210,19 @@ function App() {
               Logout
             </button>
           </div>
-        ) : null}
+        ) : (
+          <div>
+            <h3 style={{ marginTop: '1em' }}>Sign in to unlock the magic</h3>
+            <button onClick={onGoogleButtonHandler} className="google-button">
+              <img
+                src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-webinar-optimizing-for-success-google-business-webinar-13.png"
+                alt="Google Logo"
+                className="google-logo"
+              />
+              Sign in with Google
+            </button>
+          </div>
+        )}
       </>
     );
   };
