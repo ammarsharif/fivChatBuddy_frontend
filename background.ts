@@ -96,14 +96,7 @@ chrome.runtime.onMessage.addListener(async function (
     }
 
     switch (message.action) {
-      case 'generateEmailText':
-        const { selectedTone, selectedRole } = message;
-        chrome.tabs.sendMessage(activeTab.id, {
-          action: 'generateEmailText',
-          selectedTone: selectedTone,
-          selectedRole: selectedRole,
-        });
-        break;
+
       case 'checkAuthentication':
         (async () => {
           const authToken = await getAuthToken(false);
@@ -150,7 +143,6 @@ chrome.runtime.onMessage.addListener(async function (
         }
         break;
 
-      case 'generateEmailText':
       case 'clickReplyButton':
       case 'suggestedText':
       case 'closeIframe':
