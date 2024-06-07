@@ -181,12 +181,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   }
 });
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  if (message.action === 'generateEmailText') {
-    const emailText = message.emailText;
-  }
-});
-
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     if (mutation.type === 'childList') {
