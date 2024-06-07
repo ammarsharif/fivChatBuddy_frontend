@@ -76,11 +76,10 @@ const addButtonToPage = () => {
 
   if (mainDiv && !document.getElementById('myInjectButton')) {
     const button = document.createElement('img');
-    button.src =
-      'https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png';
+    button.src = chrome.runtime.getURL('icons/main_logo.png');
     button.alt = 'icon';
     button.id = 'myInjectButton';
-    button.style.width = '43px';
+    button.style.width = '27px';
     button.style.height = '24px';
     button.style.borderRadius = '50%';
     button.style.marginRight = '-30px';

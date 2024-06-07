@@ -39,7 +39,8 @@
         "auth.html",
         "subscription.html",
         "feedback.html",
-        "help.html"
+        "help.html",
+        "icons/main_logo.png"
       ],
       "matches": ["<all_urls>"]
     }
