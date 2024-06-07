@@ -94,8 +94,9 @@ const addButtonToPage = () => {
           if (iframeExists) {
             chrome.runtime.sendMessage({ action: 'closeIframe' });
           } else {
+            chrome.runtime.sendMessage({ action: 'receiveEmailText' });
             setTimeout(() => {
-              chrome.runtime.sendMessage({ action: 'receiveEmailText' });
+              chrome.runtime.sendMessage({ action: 'executeOnClicker' });
             }, 1000);
           }
         } else {

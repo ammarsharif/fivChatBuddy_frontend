@@ -44,21 +44,21 @@ const MainModel: React.FC = () => {
     const tone = event.target.value;
     setSelectedTone(tone);
     useRefState.current = false;
-    chrome.runtime.sendMessage({ action: 'generateEmailText' });
+    chrome.runtime.sendMessage({ action: 'executeOnClicker' });
   };
 
   const handleRoleChange = async (event: ChangeEvent<HTMLSelectElement>) => {
     const role = event.target.value;
     setSelectedRole(role);
     useRefState.current = false;
-    chrome.runtime.sendMessage({ action: 'generateEmailText' });
+    chrome.runtime.sendMessage({ action: 'executeOnClicker' });
   };
 
   const handleReloadClick = async () => {
     setLoading(true);
     useRefState.current = false;
     chrome.runtime.sendMessage({
-      action: 'generateEmailText',
+      action: 'executeOnClicker',
       selectedTone: selectedTone,
       selectedRole: selectedRole,
     });
@@ -75,12 +75,11 @@ const MainModel: React.FC = () => {
             headers: {
               'content-type': 'application/json',
               Authorization:
-                'Bearer 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',
+                'Bearer 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',
             },
             body: JSON.stringify({
               messages: [{ role: 'user', content: modifiedEmailText }],
-              model: 'openai/gpt-3.5-turbo',
-              max_tokens: 200,
+              model: 'gryphe/mythomist-7b:free',
             }),
           }
         );
