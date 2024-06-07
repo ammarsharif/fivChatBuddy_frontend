@@ -171,12 +171,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       'message-box-text-area'
     ) as HTMLTextAreaElement;
     if (textarea) {
-      textarea.value = message.suggestedText;
+      textarea.value = message.suggestion;
       textarea.dispatchEvent(new Event('input', { bubbles: true }));
     }
     const ruler = document.querySelector('.ruler');
     if (ruler) {
-      ruler.textContent = message.suggestedText;
+      ruler.textContent = message.suggestion;
     }
   }
 });
