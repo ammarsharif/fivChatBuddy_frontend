@@ -2,18 +2,61 @@
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .feedback-container h2 {
   margin-top: 0;
 }
 
-.feedback-container button {
-  margin-top: 20px;
+.back-button {
+  background: none;
+  border: none;
+  color: #1dbf73;
+  cursor: pointer;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.feedback-container p {
+  margin-bottom: 20px;
+}
+
+.feedback-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.feedback-container .input-field,
+.feedback-container .textarea-field {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  resize: vertical;
+}
+
+.feedback-container .input-field:focus,
+.feedback-container .textarea-field:focus {
+  outline: none;
+  border-color: #1dbf73;
+}
+
+.feedback-container .submit-button {
   background-color: #1dbf73;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.feedback-container .submit-button:hover {
+  background-color: #15a362;
+}
+
+.feedback-container .submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
