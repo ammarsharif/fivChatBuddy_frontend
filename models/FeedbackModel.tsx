@@ -4,10 +4,10 @@ import emailjs from 'emailjs-com';
 import '../styles/stylesFeedbackModel.css';
 
 interface FeedbackModelProps {
-  onBack: () => void;
+  onClose: () => void;
 }
 
-const FeedbackModel: React.FC<FeedbackModelProps> = ({ onBack }) => {
+const FeedbackModel: React.FC<FeedbackModelProps> = ({ onClose }) => {
   const [name, setName] = useState('');
   const [feedback, setFeedback] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -43,7 +43,7 @@ const FeedbackModel: React.FC<FeedbackModelProps> = ({ onBack }) => {
 
   return (
     <>
-      <button className="back-button" onClick={onBack}>
+      <button className="back-button" onClick={onClose}>
         <IoMdArrowRoundBack />
       </button>
       <div className="feedback-container">
