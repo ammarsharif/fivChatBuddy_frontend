@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import '../styles/stylesTabUserModel.css';
+import '../styles/stylesUserModel.css';
 import { RiContactsLine } from 'react-icons/ri';
 import { CiStar } from 'react-icons/ci';
 import SubscriptionModel from './SubscriptionModel';
