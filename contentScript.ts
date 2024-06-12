@@ -76,16 +76,10 @@ const addButtonToPage = () => {
 
   if (mainDiv && !document.getElementById('myInjectButton')) {
     const button = document.createElement('img');
-    button.src = chrome.runtime.getURL('icons/main_logo.png');
+    button.src = chrome.runtime.getURL('icons/logo_white.png');
     button.alt = 'icon';
     button.id = 'myInjectButton';
-    button.style.width = '27px';
-    button.style.height = '24px';
-    button.style.borderRadius = '50%';
-    button.style.marginRight = '-30px';
-    button.style.position = 'absolute';
-    button.style.right = '6.5em';
-    button.style.cursor = 'pointer';
+    button.classList.add('my-inject-button');
     button.addEventListener('click', function () {
       checkAuthentication().then((response) => {
         if (response?.authenticated) {

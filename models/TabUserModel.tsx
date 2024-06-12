@@ -177,10 +177,10 @@ const TabUserModel: React.FC = () => {
       <div className="sidebar">
         <div className="logo-header">
           <img
-            src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
-            width="43px"
-            height="25px"
-            style={{ borderRadius: '50%' }}
+            src="icons/logo_white.png"
+            width="40px"
+            height="35px"
+            style={{ borderRadius: '50%', marginRight: '0.5em' }}
           />
           <p className="heading">User Profile</p>
         </div>

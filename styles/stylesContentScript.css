@@ -1,30 +1,10 @@
 #myInjectButton {
-  padding: 9.5px 16px;
-  background-color: transparent;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: Arial, sans-serif;
-  font-size: 0.875rem;
-}
-
-#myInjectButton img {
-  width: 17px;
-  height: 17px;
-  margin-right: 5px;
+  width: 27px;
+  height: 25px;
   border-radius: 50%;
-}
-
-#myInjectButton .contentWrapper {
-  display: flex;
-  align-items: center;
-}
-
-#myInjectSmallButton {
-  width: 24px;
-  height: 24px;
-  border-radius: 20px;
-  margin-left: 10px;
-  margin-right: 2px;
+  margin-right: -15px;
+  position: absolute;
+  right: 6.5em;
   cursor: pointer;
 }
 

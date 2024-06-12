@@ -154,10 +154,10 @@ function App() {
         <div className="header">
           <div className="logo-header">
             <img
-              src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
-              width={'43px'}
-              height={'24px'}
-              style={{ borderRadius: '50%' }}
+              src="icons/logo_white.png"
+              width={'40px'}
+              height={'35px'}
+              style={{ borderRadius: '50%', marginRight: '0.5em' }}
               alt="EvolveBay Logo"
             />
             <p className="heading">Fiverr</p>

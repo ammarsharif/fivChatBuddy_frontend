@@ -129,10 +129,10 @@ const MainModel: React.FC = () => {
         <div className="header">
           <div className="logoHeader">
             <img
-              src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
-              height="24px"
-              width="42px"
-              style={{ borderRadius: '50%' }}
+              src='icons/logo_white.png'
+              width="28px"
+              height="26px"
+              style={{ borderRadius: '50%',marginRight: '1em' }}
               alt="Fiverr Logo"
             ></img>
             <p className="heading">A.I Suggested Replies</p>

@@ -75,11 +75,11 @@ const AuthModel: React.FC = () => {
         <div className="header">
           <div className="logo-header">
             <img
-              src="https://logos-world.net/wp-content/uploads/2020/12/Fiverr-Logo.png"
-              width="45px"
-              height="25px"
+              src="icons/logo_white.png"
+              width="40px"
+              height="35px"
               alt="FivChat Logo"
-              style={{ borderRadius: '50%' }}
+              style={{ borderRadius: '50%', marginRight: '0.5em' }}
             />
             <p className="heading">Sign In</p>
           </div>

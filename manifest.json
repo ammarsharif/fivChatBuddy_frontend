@@ -40,7 +40,8 @@
         "subscription.html",
         "feedback.html",
         "help.html",
-        "icons/main_logo.png"
+        "icons/logo_white.png",
+        "icons/logo_trans.png"
       ],
       "matches": ["<all_urls>"]
     }
