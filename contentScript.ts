@@ -1,6 +1,8 @@
 import './styles/stylesContentScript.css';
+
 let iframeExists = false;
 let iUserProfile = false;
+let lastUrl: string | null = null;
 
 const checkAuthentication = async (): Promise<any> => {
   return new Promise((resolve) => {
@@ -104,6 +106,23 @@ const addButtonToPage = () => {
   }
 };
 
+const checkAndHandleUrlChange = () => {
+  const currentUrl = window.location.href;
+  if (lastUrl && lastUrl !== currentUrl) {
+    if (iframeExists) {
+      chrome.runtime.sendMessage({ action: 'closeIframe' });
+    }
+  }
+  lastUrl = currentUrl;
+};
+const contactsList = document.querySelector('.contacts-list');
+
+if (contactsList) {
+  contactsList.addEventListener('click', () => {
+    setTimeout(checkAndHandleUrlChange, 300);
+  });
+}
+
 window.onload = function () {
   setTimeout(() => {
     addButtonToPage();
@@ -184,3 +203,6 @@ const observer = new MutationObserver((mutations) => {
 
 const config = { childList: true, subtree: true };
 observer.observe(document.body, config);
+
+const initialUrl = window.location.href;
+lastUrl = initialUrl;
