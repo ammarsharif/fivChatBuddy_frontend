@@ -1,14 +1,5 @@
-.help-container {
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 5px;
-}
 
-.help-container h2 {
-  margin-top: 0;
-}
-
-.help-container button {
+.back-button {
   margin-top: 20px;
   background-color: #1dbf73;
   color: white;
@@ -16,4 +7,90 @@
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+
+.help-model-wrapper {
+  position: relative;
+  padding: 20px;
+  background-color: #f0f4f8;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+  
+.back-button:hover {
+  color: #15c472;
+}
+
+.model-container {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.model-container h2 {
+  margin-bottom: 20px;
+  font-size: 2em;
+  color: #333;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.intro-text {
+  margin-bottom: 20px;
+  font-size: 1.2em;
+  color: #555;
+  text-align: center;
+}
+
+.step {
+  margin-bottom: 20px;
+}
+
+.step h3 {
+  margin-bottom: 10px;
+  font-size: 1.5em;
+  color: #1dbf73;
+  font-family: 'Arial', sans-serif;
+}
+
+.step p {
+  margin-bottom: 10px;
+  font-size: 1em;
+  color: #666;
+  line-height: 1.5;
+}
+
+.additional-tips {
+  margin-top: 20px;
+}
+
+.additional-tips h3 {
+  margin-bottom: 10px;
+  font-size: 1.5em;
+  color: #1dbf73;
+  font-family: 'Arial', sans-serif;
+}
+
+.additional-tips ul {
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.additional-tips ul li {
+  margin-bottom: 10px;
+  font-size: 1em;
+  color: #666;
+}
+
+.closing-text {
+  margin-top: 20px;
+  font-size: 1em;
+  color: #555;
+  text-align: center;
+  font-style: italic;
 }
