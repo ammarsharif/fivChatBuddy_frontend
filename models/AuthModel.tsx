@@ -123,12 +123,7 @@ const AuthModel: React.FC = () => {
               <p style={{ margin: '5px' }}>
                 By clicking “Connect with Google” you agree
               </p>
-              <p style={{ margin: '0px' }}>
-                to the{' '}
-                <a href="/terms-of-use" className="link-underline">
-                  Terms of Use
-                </a>
-              </p>
+              <p style={{ margin: '0px' }}>to the Terms of Use</p>
             </>
           )}
         </div>
