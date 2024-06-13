@@ -1,15 +1,15 @@
 .back-button {
-  margin-top: 20px;
+  margin-top: 0px;
   background-color: #1dbf73;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 5px;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .back-button:hover {
-  color: #15c472;
+  color: #3bee9a;
 }
 
 .help-model-wrapper {

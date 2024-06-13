@@ -121,7 +121,7 @@ const AuthModel: React.FC = () => {
                 Sign in with Google
               </button>
               <p style={{ margin: '5px' }}>
-                By clicking “Connect with Google” you agree
+                By clicking “Sign in with Google” you agree
               </p>
               <p style={{ margin: '0px' }}>to the Terms of Use</p>
             </>

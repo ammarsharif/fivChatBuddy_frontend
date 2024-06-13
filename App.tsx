@@ -155,7 +155,7 @@ function App() {
           <div className="logo-header">
             <img
               src="icons/logo_white.png"
-              width={'38px'}
+              width={'36px'}
               height={'35px'}
               style={{ borderRadius: '50%', marginRight: '0.5em' }}
               alt="EvolveBay Logo"

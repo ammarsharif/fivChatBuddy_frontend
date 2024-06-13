@@ -4,9 +4,19 @@
   "description": "Demo Chrome Extension that uses React and Webpack",
   "version": "1.0.0",
   "permissions": ["activeTab", "scripting", "tabs", "identity", "storage"],
+  "icons": {
+    "16": "icons/logo_trans.png",
+    "48": "icons/logo_trans.png",
+    "128": "icons/logo_trans.png"
+  },
   "action": {
     "default_popup": "index.html",
-    "default_title": "Fiverr Reader"
+    "default_title": "Fiverr Reader",
+    "default_icon": {
+      "16": "icons/logo_trans.png",
+      "48": "icons/logo_trans.png",
+      "128": "icons/logo_trans.png"
+    }
   },
   "background": {
     "service_worker": "background.js"
