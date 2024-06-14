@@ -25,7 +25,7 @@ const AuthModel: React.FC = () => {
     try {
       const token = await getAuthToken();
       setLoading(true);
-      await fetchProfileInfo(token);
+      await fetchProfileInfo(token, true);
     } catch (error) {
       console.error('Error fetching profile info:', error);
     } finally {
@@ -35,7 +35,10 @@ const AuthModel: React.FC = () => {
     }
   };
 
-  const fetchProfileInfo = async (token: string | undefined) => {
+  const fetchProfileInfo = async (
+    token: string | undefined,
+    tokenStatus: boolean
+  ) => {
     const response = await fetch(
       'https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos',
       {
@@ -45,6 +48,13 @@ const AuthModel: React.FC = () => {
       }
     );
     const profileInfo = await response.json();
+    const email = profileInfo.emailAddresses?.[0]?.value;
+    if (!email) {
+      console.log('Email not found in profile info.');
+      setLoading(false);
+      return;
+    }
+    profileInfo.tokenStatus = tokenStatus;
     await fetch(`${process.env.FIV_CHAT_API_BASE_URL}api/profile`, {
       method: 'POST',
       headers: {
