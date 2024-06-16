@@ -46,10 +46,10 @@ const FeedbackModel: React.FC<FeedbackModelProps> = ({ onClose }) => {
 
     emailjs
       .send(
-        'service_d2qjxj',
-        'template_l9ipj9v',
+        'service_ddt9esp',
+        'template_vc3ik3q',
         templateParams,
-        'PV02uSJkTcSgE5AIf'
+        'TyACbFbv79tr7rPUB'
       )
       .then((response) => {
         alert('SUCCESS!! ' + response.status);

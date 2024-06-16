@@ -27,16 +27,15 @@
   flex-direction: column;
 }
 
-.feedback-container .input-field,
 .feedback-container .textarea-field {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-bottom: 10px;
-  resize: vertical;
+  resize: none;
+  height: 50px;
 }
 
-.feedback-container .input-field:focus,
 .feedback-container .textarea-field:focus {
   outline: none;
   border-color: #1dbf73;
