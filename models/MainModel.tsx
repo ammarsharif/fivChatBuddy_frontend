@@ -3,6 +3,7 @@ import { RxCross1 } from 'react-icons/rx';
 import { FaRegPaste } from 'react-icons/fa6';
 import { TbReload } from 'react-icons/tb';
 import '../styles/stylesMainModel.css';
+import { getAuthToken } from '../background';
 
 const MainModel: React.FC = () => {
   const [responseText, setResponseText] = useState<{ text: string }[] | null>(
@@ -11,6 +12,7 @@ const MainModel: React.FC = () => {
   const [selectedTone, setSelectedTone] = useState<string>('formal');
   const [selectedRole, setSelectedRole] = useState<string>('seller');
   const [loading, setLoading] = useState<boolean>(true);
+  const [apiCalls, setApiCalls] = useState<number>(0); // Track API calls
   const useRefState = useRef(false);
 
   useEffect(() => {
@@ -36,6 +38,21 @@ const MainModel: React.FC = () => {
       chrome.runtime.onMessage.removeListener(messageListener);
     };
   }, [selectedTone, selectedRole]);
+
+  const updateProfileApiCalls = async () => {
+    const token = await getAuthToken();
+    try {
+      await fetch(`http://localhost:5000/api/profile`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token, increment: 3 }),
+      });
+    } catch (error) {
+      console.error('Failed to update API calls:', error);
+    }
+  };
 
   const handleToneChange = async (event: ChangeEvent<HTMLSelectElement>) => {
     const tone = event.target.value;
@@ -95,8 +112,8 @@ const MainModel: React.FC = () => {
       ) as { text: string }[];
 
       if (validResponses.length === 3) {
-        console.log(validResponses, 'VALID RESPONSE:::::');
         setResponseText(validResponses);
+        await updateProfileApiCalls();
       } else {
         return null;
       }
@@ -129,10 +146,10 @@ const MainModel: React.FC = () => {
         <div className="header">
           <div className="logoHeader">
             <img
-              src='icons/logo_white.png'
+              src="icons/logo_white.png"
               width="28px"
               height="26px"
-              style={{ borderRadius: '50%',marginRight: '1em' }}
+              style={{ borderRadius: '50%', marginRight: '1em' }}
               alt="Fiverr Logo"
             ></img>
             <p className="heading">A.I Suggested Replies</p>
