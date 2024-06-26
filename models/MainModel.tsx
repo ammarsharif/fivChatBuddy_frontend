@@ -39,21 +39,21 @@ const MainModel: React.FC = () => {
     };
   }, [selectedTone, selectedRole]);
 
-  const updateProfileApiCalls = async () => {
+  const updateProfileApiCalls = async (increment: number) => {
     try {
-      await fetch(`${process.env.FIV_CHAT_API_BASE_URL}/api/updateApiCount`, {
+      await fetch(`http://localhost:5000/api/profile/updateApiCount`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: user?.id, increment: 3 }),
+        body: JSON.stringify({ userId: user?.id, increment }),
       });
     } catch (error) {
       console.error('Failed to update API calls:', error);
     }
   };
 
-  const updatePlanApiCounts = async () => {
+  const updatePlanApiCounts = async (increment: number) => {
     try {
       const response = await fetch(
         `http://localhost:5000/api/subscription/updateApiCount`,
@@ -62,7 +62,7 @@ const MainModel: React.FC = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userId: user?.id, increment: 3 }),
+          body: JSON.stringify({ userId: user?.id, increment }),
         }
       );
       const data = await response.json();
@@ -106,6 +106,15 @@ const MainModel: React.FC = () => {
   const generateResponse = async (modifiedEmailText: string) => {
     try {
       setLoading(true);
+      const updateApiCountResponse = await updatePlanApiCounts(3);
+      if (!updateApiCountResponse?.ok) {
+        setResponseText([
+          { text: 'Please update your plan to continue using the service.' },
+        ]);
+        setLoading(false);
+        return;
+      }
+      await updateProfileApiCalls(3);
       const fetchResponse = async () => {
         const response = await fetch(
           'https://openrouter.ai/api/v1/chat/completions',
@@ -138,20 +147,13 @@ const MainModel: React.FC = () => {
 
       if (validResponses.length === 3) {
         setResponseText(validResponses);
-        const updateApiCountResponse = await updatePlanApiCounts();
-        if (!updateApiCountResponse?.ok) {
-          setResponseText([
-            { text: 'Please update your plan to continue using the service.' },
-          ]);
-          setLoading(false);
-          return;
-        }
-        await updateProfileApiCalls();
       } else {
         return null;
       }
     } catch (error) {
       console.error('Error:', error);
+      await updatePlanApiCounts(-3);
+      await updateProfileApiCalls(-3);
       return null;
     } finally {
       setLoading(false);
