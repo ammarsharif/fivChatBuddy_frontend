@@ -42,7 +42,7 @@ const AuthModel: React.FC = () => {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/profile`,
+        `${process.env.FIV_CHAT_API_BASE_URL}/api/profile`,
         {
           method: 'POST',
           headers: {

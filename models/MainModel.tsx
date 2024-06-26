@@ -42,7 +42,7 @@ const MainModel: React.FC = () => {
   const updateProfileApiCalls = async () => {
     const token = await getAuthToken();
     try {
-      await fetch(`http://localhost:5000/api/profile`, {
+      await fetch(`${process.env.FIV_CHAT_API_BASE_URL}/api/profile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
