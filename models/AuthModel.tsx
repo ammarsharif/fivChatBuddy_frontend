@@ -56,6 +56,8 @@ const AuthModel: React.FC = () => {
       }
 
       const profileInfo = await response.json();
+      const { id, emailAddress } = profileInfo;
+      localStorage.setItem('user', JSON.stringify({ id, emailAddress }));
       return profileInfo;
     } catch (error) {
       console.error('Error in fetchProfileInfoFromBackend:', error);

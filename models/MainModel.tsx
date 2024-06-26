@@ -3,6 +3,7 @@ import { RxCross1 } from 'react-icons/rx';
 import { FaRegPaste } from 'react-icons/fa6';
 import { TbReload } from 'react-icons/tb';
 import '../styles/stylesMainModel.css';
+import { getUserInfo } from '../utils/auth';
 import { getAuthToken } from '../background';
 
 const MainModel: React.FC = () => {
@@ -12,7 +13,7 @@ const MainModel: React.FC = () => {
   const [selectedTone, setSelectedTone] = useState<string>('formal');
   const [selectedRole, setSelectedRole] = useState<string>('seller');
   const [loading, setLoading] = useState<boolean>(true);
-  const [apiCalls, setApiCalls] = useState<number>(0); // Track API calls
+  const user = getUserInfo();
   const useRefState = useRef(false);
 
   useEffect(() => {
@@ -54,6 +55,30 @@ const MainModel: React.FC = () => {
     }
   };
 
+  const updatePlanApiCounts = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/subscription/updateApiCount`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId: user?.id, increment: 3 }),
+        }
+      );
+      const data = await response.json();
+
+      console.log(data, 'DATA FROM UPDATE API:::::');
+      if (!data.ok) {
+        throw new Error(data.message || 'Failed to update API calls');
+      }
+      return data;
+    } catch (error) {
+      console.error('Failed to update API calls:', error);
+    }
+  };
+
   const handleToneChange = async (event: ChangeEvent<HTMLSelectElement>) => {
     const tone = event.target.value;
     setSelectedTone(tone);
@@ -81,6 +106,14 @@ const MainModel: React.FC = () => {
   const generateResponse = async (modifiedEmailText: string) => {
     try {
       setLoading(true);
+      const updateApiCountResponse = await updatePlanApiCounts();
+      if (!updateApiCountResponse?.ok) {
+        setResponseText([
+          { text: 'Please update your plan to continue using the service.' },
+        ]);
+        setLoading(false);
+        return;
+      }
       const fetchResponse = async () => {
         const response = await fetch(
           'https://openrouter.ai/api/v1/chat/completions',
